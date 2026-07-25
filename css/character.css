@@ -1093,3 +1093,24 @@
     transition: none !important;
   }
 }
+
+/* ==========================================
+   Character Form Text Color Fix
+========================================== */
+
+.character-form,
+.character-form label,
+.character-form .field__label,
+.character-form .field__label span,
+.character-form .form-section h2,
+.character-form .eyebrow {
+  color: var(--character-text) !important;
+}
+
+.character-form .field__note {
+  color: var(--character-text-sub) !important;
+}
+
+.character-form .field__error {
+  color: var(--character-danger) !important;
+}
