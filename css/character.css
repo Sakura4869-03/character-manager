@@ -1137,3 +1137,102 @@
   color: #202636 !important;
   -webkit-text-fill-color: #202636 !important;
 }
+
+/* ==========================================
+   Character Editor Color Override
+========================================== */
+
+/* ---------- 見出し ---------- */
+
+.character-main h1,
+.character-main h2,
+.character-main h3,
+.character-main h4,
+.character-main h5,
+.character-main h6 {
+    color: #202636 !important;
+}
+
+/* ---------- 通常テキスト ---------- */
+
+.character-main p,
+.character-main span,
+.character-main label,
+.character-main strong,
+.character-main small,
+.character-main li,
+.character-main dt,
+.character-main dd {
+    color: #202636 !important;
+}
+
+/* ---------- サブテキスト ---------- */
+
+.character-main .field__note,
+.character-main .preview-card__summary,
+.character-main .preview-card__title,
+.character-main .editor-header__status,
+.character-main .form-actions__label,
+.character-main .form-actions__date {
+    color: #697386 !important;
+}
+
+/* ---------- プレビュー ---------- */
+
+.character-main .preview-card__work {
+    color: var(--accent-color) !important;
+}
+
+.character-main .preview-card__body h2 {
+    color: #202636 !important;
+}
+
+.character-main .preview-card__tags span {
+    color: var(--accent-color) !important;
+}
+
+/* ---------- ボタン ---------- */
+
+.character-main .button--secondary,
+.character-main .button--sub,
+.character-main .mini-button {
+    color: #202636 !important;
+}
+
+.character-main .button--primary {
+    color: #fff !important;
+}
+
+.character-main .button--danger {
+    color: #d8485f !important;
+}
+
+/* ---------- フォーム ---------- */
+
+.character-main input,
+.character-main textarea,
+.character-main select {
+    color: #202636 !important;
+    -webkit-text-fill-color: #202636 !important;
+}
+
+.character-main input::placeholder,
+.character-main textarea::placeholder {
+    color: #9aa3b3 !important;
+}
+
+/* ---------- 必須バッジ ---------- */
+
+.character-main .badge {
+    color: #9a7422 !important;
+}
+
+.character-main .field__error {
+    color: #d8485f !important;
+}
+
+/* ---------- アイコンボタン ---------- */
+
+.character-main .icon-button {
+    color: #202636 !important;
+}
