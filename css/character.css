@@ -1114,3 +1114,26 @@
 .character-form .field__error {
   color: var(--character-danger) !important;
 }
+
+/* ==========================================
+   Input Text Color Fix
+========================================== */
+
+.character-form input,
+.character-form textarea,
+.character-form select {
+  color: #202636 !important;
+  -webkit-text-fill-color: #202636 !important; /* Chrome対策 */
+}
+
+.character-form input::placeholder,
+.character-form textarea::placeholder {
+  color: #8a93a5 !important;
+}
+
+.character-form input:focus,
+.character-form textarea:focus,
+.character-form select:focus {
+  color: #202636 !important;
+  -webkit-text-fill-color: #202636 !important;
+}
