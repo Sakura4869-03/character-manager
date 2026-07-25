@@ -1,0 +1,1700 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <meta
+    name="description"
+    content="キャラクター設定を登録・編集・管理するためのローカルWebアプリです。"
+  >
+
+  <title>キャラクター編集 | Character Archive</title>
+
+  <link
+    rel="stylesheet"
+    href="css/reset.css"
+  >
+
+  <link
+    rel="stylesheet"
+    href="css/common.css"
+  >
+
+  <link
+    rel="stylesheet"
+    href="css/character.css"
+  >
+</head>
+
+<body>
+  <div class="app">
+    <!-- ======================================
+         Sidebar
+    ======================================= -->
+
+    <aside
+      class="sidebar"
+      id="sidebar"
+      aria-label="メインメニュー"
+    >
+      <div class="sidebar__header">
+        <a
+          class="brand"
+          href="index.html"
+          aria-label="キャラクター一覧へ戻る"
+        >
+          <span
+            class="brand__mark"
+            aria-hidden="true"
+          >
+            ✦
+          </span>
+
+          <span class="brand__text">
+            <strong>
+              Character Archive
+            </strong>
+
+            <small>
+              キャラクター設定管理
+            </small>
+          </span>
+        </a>
+
+        <button
+          class="icon-button sidebar__close"
+          id="sidebarClose"
+          type="button"
+          aria-label="メニューを閉じる"
+        >
+          ×
+        </button>
+      </div>
+
+      <nav class="sidebar__nav">
+        <a
+          class="sidebar__link"
+          href="index.html"
+        >
+          <span
+            class="sidebar__icon"
+            aria-hidden="true"
+          >
+            ◫
+          </span>
+
+          <span>
+            キャラクター一覧
+          </span>
+        </a>
+
+        <button
+          class="sidebar__link sidebar__button is-active"
+          type="button"
+          data-new-character
+        >
+          <span
+            class="sidebar__icon"
+            aria-hidden="true"
+          >
+            ＋
+          </span>
+
+          <span>
+            新規キャラクター
+          </span>
+        </button>
+
+        <button
+          class="sidebar__link sidebar__button"
+          id="duplicateButton"
+          type="button"
+        >
+          <span
+            class="sidebar__icon"
+            aria-hidden="true"
+          >
+            ⧉
+          </span>
+
+          <span>
+            このキャラを複製
+          </span>
+        </button>
+
+        <button
+          class="sidebar__link sidebar__button"
+          id="exportCharacterButton"
+          type="button"
+        >
+          <span
+            class="sidebar__icon"
+            aria-hidden="true"
+          >
+            ⇩
+          </span>
+
+          <span>
+            JSONを書き出す
+          </span>
+        </button>
+
+        <button
+          class="sidebar__link sidebar__button"
+          id="printButton"
+          type="button"
+        >
+          <span
+            class="sidebar__icon"
+            aria-hidden="true"
+          >
+            ▣
+          </span>
+
+          <span>
+            設定資料を印刷
+          </span>
+        </button>
+      </nav>
+
+      <div class="sidebar__note">
+        <p>
+          入力内容は、このブラウザ内に保存されます。
+        </p>
+
+        <p>
+          画像を多く登録すると、保存容量が不足する場合があります。
+        </p>
+      </div>
+    </aside>
+
+    <button
+      class="sidebar-overlay"
+      id="sidebarOverlay"
+      type="button"
+      aria-label="メニューを閉じる"
+    ></button>
+
+    <!-- ======================================
+         Main
+    ======================================= -->
+
+    <main class="main character-main">
+      <!-- ====================================
+           Header
+      ===================================== -->
+
+      <header class="editor-header">
+        <div class="editor-header__left">
+          <button
+            class="icon-button topbar__menu"
+            id="sidebarOpen"
+            type="button"
+            aria-label="メニューを開く"
+          >
+            ☰
+          </button>
+
+          <div>
+            <p class="eyebrow">
+              CHARACTER EDITOR
+            </p>
+
+            <h1 id="pageTitle">
+              新規キャラクター
+            </h1>
+
+            <p
+              class="editor-header__status"
+              id="saveStatus"
+              aria-live="polite"
+            >
+              未保存
+            </p>
+          </div>
+        </div>
+
+        <div class="editor-header__actions">
+          <a
+            class="button button--secondary"
+            href="index.html"
+          >
+            一覧へ戻る
+          </a>
+
+          <button
+            class="button button--primary button--large"
+            id="saveButton"
+            type="submit"
+            form="characterForm"
+          >
+            保存する
+          </button>
+        </div>
+      </header>
+
+      <!-- ====================================
+           Editor Layout
+      ===================================== -->
+
+      <div class="editor-layout">
+        <!-- ==================================
+             Preview
+        =================================== -->
+
+        <aside class="preview-panel">
+          <div class="preview-card card">
+            <div class="preview-card__image">
+              <img
+                id="imagePreview"
+                src=""
+                alt=""
+                hidden
+              >
+
+              <div
+                class="preview-card__placeholder"
+                id="imagePlaceholder"
+                aria-hidden="true"
+              >
+                <span
+                  class="preview-card__placeholder-icon"
+                  id="previewInitial"
+                >
+                  ✦
+                </span>
+
+                <span>
+                  キャラクター画像
+                </span>
+              </div>
+
+              <span
+                class="preview-card__color"
+                id="themeColorPreview"
+                aria-hidden="true"
+              ></span>
+            </div>
+
+            <div class="preview-card__body">
+              <p
+                class="preview-card__work"
+                id="workPreview"
+              >
+                作品未設定
+              </p>
+
+              <h2 id="namePreview">
+                名前未設定
+              </h2>
+
+              <p
+                class="preview-card__title"
+                id="titlePreview"
+              >
+                肩書き・立場
+              </p>
+
+              <p
+                class="preview-card__summary"
+                id="summaryPreview"
+              >
+                キャラクターの概要を入力すると、ここに表示されます。
+              </p>
+
+              <div
+                class="preview-card__tags"
+                id="tagPreview"
+              ></div>
+            </div>
+          </div>
+
+          <div class="preview-actions">
+            <button
+              class="button button--secondary w-full"
+              id="scrollToPromptButton"
+              type="button"
+            >
+              プロンプト欄へ移動
+            </button>
+          </div>
+        </aside>
+
+        <!-- ==================================
+             Form
+        =================================== -->
+
+        <form
+          class="character-form"
+          id="characterForm"
+          novalidate
+        >
+          <input
+            id="characterId"
+            name="id"
+            type="hidden"
+          >
+
+          <!-- ================================
+               Basic Information
+          ================================= -->
+
+          <section
+            class="form-section card"
+            id="basicSection"
+          >
+            <div class="form-section__header">
+              <div>
+                <p class="eyebrow">
+                  BASIC INFORMATION
+                </p>
+
+                <h2>
+                  基本情報
+                </h2>
+              </div>
+
+              <span class="badge badge--gold">
+                必須項目あり
+              </span>
+            </div>
+
+            <div class="form-grid">
+              <div class="field form-grid__wide">
+                <label
+                  class="field__label"
+                  for="name"
+                >
+                  <span>
+                    キャラクター名
+                  </span>
+
+                  <em>
+                    必須
+                  </em>
+                </label>
+
+                <input
+                  id="name"
+                  name="name"
+                  type="text"
+                  maxlength="100"
+                  autocomplete="off"
+                  placeholder="例：皇 桜"
+                  required
+                >
+
+                <p
+                  class="field__error"
+                  id="nameError"
+                  hidden
+                >
+                  キャラクター名を入力してください。
+                </p>
+              </div>
+
+              <div class="field">
+                <label
+                  class="field__label"
+                  for="reading"
+                >
+                  読み方
+                </label>
+
+                <input
+                  id="reading"
+                  name="reading"
+                  type="text"
+                  maxlength="100"
+                  autocomplete="off"
+                  placeholder="例：すめらぎ さくら"
+                >
+              </div>
+
+              <div class="field">
+                <label
+                  class="field__label"
+                  for="title"
+                >
+                  肩書き・立場
+                </label>
+
+                <input
+                  id="title"
+                  name="title"
+                  type="text"
+                  maxlength="120"
+                  autocomplete="off"
+                  placeholder="例：天星学園 2年生"
+                >
+              </div>
+
+              <div class="field form-grid__wide">
+                <label
+                  class="field__label"
+                  for="work"
+                >
+                  作品・シリーズ名
+                </label>
+
+                <input
+                  id="work"
+                  name="work"
+                  type="text"
+                  maxlength="120"
+                  autocomplete="off"
+                  placeholder="例：天星学園 キャラクター設定資料集"
+                >
+              </div>
+
+              <div class="field">
+                <label
+                  class="field__label"
+                  for="age"
+                >
+                  年齢
+                </label>
+
+                <input
+                  id="age"
+                  name="age"
+                  type="text"
+                  maxlength="30"
+                  autocomplete="off"
+                  placeholder="例：17歳"
+                >
+              </div>
+
+              <div class="field">
+                <label
+                  class="field__label"
+                  for="gender"
+                >
+                  性別
+                </label>
+
+                <input
+                  id="gender"
+                  name="gender"
+                  type="text"
+                  maxlength="50"
+                  autocomplete="off"
+                  placeholder="例：男性"
+                >
+              </div>
+
+              <div class="field">
+                <label
+                  class="field__label"
+                  for="birthday"
+                >
+                  誕生日
+                </label>
+
+                <input
+                  id="birthday"
+                  name="birthday"
+                  type="text"
+                  maxlength="50"
+                  autocomplete="off"
+                  placeholder="例：3月27日"
+                >
+              </div>
+
+              <div class="field">
+                <label
+                  class="field__label"
+                  for="height"
+                >
+                  身長
+                </label>
+
+                <input
+                  id="height"
+                  name="height"
+                  type="text"
+                  maxlength="50"
+                  autocomplete="off"
+                  placeholder="例：178cm"
+                >
+              </div>
+
+              <div class="field">
+                <label
+                  class="field__label"
+                  for="schoolYear"
+                >
+                  学年
+                </label>
+
+                <input
+                  id="schoolYear"
+                  name="schoolYear"
+                  type="text"
+                  maxlength="50"
+                  autocomplete="off"
+                  placeholder="例：高校2年生"
+                >
+              </div>
+
+              <div class="field">
+                <label
+                  class="field__label"
+                  for="className"
+                >
+                  クラス
+                </label>
+
+                <input
+                  id="className"
+                  name="className"
+                  type="text"
+                  maxlength="50"
+                  autocomplete="off"
+                  placeholder="例：2年A組"
+                >
+              </div>
+
+              <div class="field">
+                <label
+                  class="field__label"
+                  for="affiliation"
+                >
+                  所属
+                </label>
+
+                <input
+                  id="affiliation"
+                  name="affiliation"
+                  type="text"
+                  maxlength="100"
+                  autocomplete="off"
+                  placeholder="例：生徒会・天文部"
+                >
+              </div>
+
+              <div class="field">
+                <label
+                  class="field__label"
+                  for="motif"
+                >
+                  モチーフ
+                </label>
+
+                <input
+                  id="motif"
+                  name="motif"
+                  type="text"
+                  maxlength="100"
+                  autocomplete="off"
+                  placeholder="例：太陽・八芒星"
+                >
+              </div>
+
+              <div class="field form-grid__wide">
+                <label
+                  class="field__label"
+                  for="tags"
+                >
+                  タグ
+                </label>
+
+                <input
+                  id="tags"
+                  name="tags"
+                  type="text"
+                  maxlength="300"
+                  autocomplete="off"
+                  placeholder="例：男子高校生, 太陽, 生徒会長"
+                >
+
+                <p class="field__note">
+                  カンマ、または読点で区切って入力してください。
+                </p>
+              </div>
+
+              <div class="field form-grid__wide">
+                <label
+                  class="field__label"
+                  for="summary"
+                >
+                  キャラクター概要
+                </label>
+
+                <textarea
+                  id="summary"
+                  name="summary"
+                  rows="5"
+                  maxlength="1000"
+                  placeholder="一覧カードにも表示する、キャラクターの短い紹介文を入力してください。"
+                ></textarea>
+              </div>
+            </div>
+          </section>
+
+          <!-- ================================
+               Image Settings
+          ================================= -->
+
+          <section
+            class="form-section card"
+            id="imageSection"
+          >
+            <div class="form-section__header">
+              <div>
+                <p class="eyebrow">
+                  IMAGE SETTINGS
+                </p>
+
+                <h2>
+                  画像・テーマカラー
+                </h2>
+              </div>
+            </div>
+
+            <div class="form-grid">
+              <div class="field form-grid__wide">
+                <span class="field__label">
+                  キャラクター画像
+                </span>
+
+                <div class="image-uploader">
+                  <label
+                    class="image-uploader__dropzone"
+                    id="imageDropzone"
+                    for="imageInput"
+                  >
+                    <span
+                      class="image-uploader__icon"
+                      aria-hidden="true"
+                    >
+                      ＋
+                    </span>
+
+                    <strong>
+                      画像を選択
+                    </strong>
+
+                    <span>
+                      JPG・PNG・WebPに対応
+                    </span>
+                  </label>
+
+                  <input
+                    id="imageInput"
+                    name="imageFile"
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp"
+                    hidden
+                  >
+
+                  <div class="image-uploader__actions">
+                    <button
+                      class="mini-button"
+                      id="changeImageButton"
+                      type="button"
+                    >
+                      画像を変更
+                    </button>
+
+                    <button
+                      class="mini-button"
+                      id="removeImageButton"
+                      type="button"
+                    >
+                      画像を削除
+                    </button>
+                  </div>
+                </div>
+
+                <input
+                  id="image"
+                  name="image"
+                  type="hidden"
+                >
+
+                <p class="field__note">
+                  画像はブラウザ保存用に自動縮小されます。
+                </p>
+              </div>
+
+              <div class="field">
+                <label
+                  class="field__label"
+                  for="imagePosition"
+                >
+                  画像の表示位置
+                </label>
+
+                <select
+                  id="imagePosition"
+                  name="imagePosition"
+                >
+                  <option value="center">
+                    中央
+                  </option>
+
+                  <option value="center top">
+                    上寄せ
+                  </option>
+
+                  <option value="center bottom">
+                    下寄せ
+                  </option>
+
+                  <option value="left center">
+                    左寄せ
+                  </option>
+
+                  <option value="right center">
+                    右寄せ
+                  </option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label
+                  class="field__label"
+                  for="themeColor"
+                >
+                  テーマカラー
+                </label>
+
+                <div class="color-field">
+                  <input
+                    id="themeColorPicker"
+                    type="color"
+                    value="#738cff"
+                    aria-label="テーマカラーを選択"
+                  >
+
+                  <input
+                    id="themeColor"
+                    name="themeColor"
+                    type="text"
+                    maxlength="7"
+                    value="#738cff"
+                    pattern="^#[0-9A-Fa-f]{6}$"
+                    placeholder="#738cff"
+                  >
+                </div>
+
+                <p
+                  class="field__error"
+                  id="themeColorError"
+                  hidden
+                >
+                  6桁のHEXカラーコードを入力してください。
+                </p>
+              </div>
+            </div>
+          </section>
+                    <!-- ================================
+               Character Details
+          ================================= -->
+
+          <section
+            class="form-section card"
+            id="detailsSection"
+          >
+            <div class="form-section__header">
+              <div>
+                <p class="eyebrow">
+                  CHARACTER DETAILS
+                </p>
+
+                <h2>
+                  キャラクター詳細
+                </h2>
+              </div>
+
+              <span class="badge">
+                設定資料
+              </span>
+            </div>
+
+            <div class="form-grid">
+              <!-- ============================
+                   Appearance
+              ============================= -->
+
+              <div class="field form-grid__wide">
+                <div class="field__label field__label--action">
+                  <label for="appearance">
+                    外見
+                  </label>
+
+                  <button
+                    class="mini-button"
+                    type="button"
+                    data-copy-target="appearance"
+                  >
+                    コピー
+                  </button>
+                </div>
+
+                <textarea
+                  id="appearance"
+                  name="appearance"
+                  rows="9"
+                  maxlength="5000"
+                  placeholder="髪型、髪色、瞳、顔立ち、体格、身長、雰囲気、特徴的な装飾などを入力してください。"
+                ></textarea>
+
+                <p class="field__note">
+                  顔・髪・瞳・体格・全体の印象をまとめておくと、画像生成用プロンプトにも流用しやすくなります。
+                </p>
+              </div>
+
+              <!-- ============================
+                   Personality
+              ============================= -->
+
+              <div class="field form-grid__wide">
+                <div class="field__label field__label--action">
+                  <label for="personality">
+                    性格
+                  </label>
+
+                  <button
+                    class="mini-button"
+                    type="button"
+                    data-copy-target="personality"
+                  >
+                    コピー
+                  </button>
+                </div>
+
+                <textarea
+                  id="personality"
+                  name="personality"
+                  rows="9"
+                  maxlength="5000"
+                  placeholder="基本性格、長所、短所、他人への接し方、感情の出し方、意外な一面などを入力してください。"
+                ></textarea>
+
+                <p class="field__note">
+                  表向きの性格と、本心・弱点・ギャップを分けて書くとキャラクター像がまとまりやすくなります。
+                </p>
+              </div>
+
+              <!-- ============================
+                   Speech
+              ============================= -->
+
+              <div class="field form-grid__wide">
+                <div class="field__label field__label--action">
+                  <label for="speech">
+                    話し方・口調
+                  </label>
+
+                  <button
+                    class="mini-button"
+                    type="button"
+                    data-copy-target="speech"
+                  >
+                    コピー
+                  </button>
+                </div>
+
+                <textarea
+                  id="speech"
+                  name="speech"
+                  rows="8"
+                  maxlength="4000"
+                  placeholder="一人称、二人称、口調、語尾、話す速さ、声の印象、よく使う言葉などを入力してください。"
+                ></textarea>
+
+                <p class="field__note">
+                  例：一人称は「俺」。親しい相手には柔らかく、初対面には丁寧。普段は落ち着いているが、焦ると早口になる。
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <!-- ================================
+               Detail Assist
+          ================================= -->
+
+          <section class="form-section card">
+            <div class="form-section__header">
+              <div>
+                <p class="eyebrow">
+                  WRITING GUIDE
+                </p>
+
+                <h2>
+                  設定を書くときの補助メモ
+                </h2>
+              </div>
+            </div>
+
+            <div class="guide-grid">
+              <article class="guide-card">
+                <h3>
+                  外見
+                </h3>
+
+                <p>
+                  髪・目・肌・顔立ち・体格・姿勢・表情・装飾の順に書くと整理しやすくなります。
+                </p>
+              </article>
+
+              <article class="guide-card">
+                <h3>
+                  性格
+                </h3>
+
+                <p>
+                  基本性格、他人への態度、弱点、怒り方、恋愛面、意外な一面まで分けると立体的になります。
+                </p>
+              </article>
+
+              <article class="guide-card">
+                <h3>
+                  話し方
+                </h3>
+
+                <p>
+                  一人称・二人称・語尾・敬語の有無・声の印象・口癖を入れると会話文が作りやすくなります。
+                </p>
+              </article>
+            </div>
+          </section>
+                    <!-- ================================
+               Profile
+          ================================= -->
+
+          <section
+            class="form-section card"
+            id="profileSection"
+          >
+            <div class="form-section__header">
+              <div>
+                <p class="eyebrow">
+                  PROFILE
+                </p>
+
+                <h2>
+                  好き・苦手・能力
+                </h2>
+              </div>
+
+              <span class="badge">
+                CHARACTER PROFILE
+              </span>
+            </div>
+
+            <div class="form-grid">
+              <!-- ============================
+                   Likes
+              ============================= -->
+
+              <div class="field">
+                <div class="field__label field__label--action">
+                  <label for="likes">
+                    好きなもの
+                  </label>
+
+                  <button
+                    class="mini-button"
+                    type="button"
+                    data-copy-target="likes"
+                  >
+                    コピー
+                  </button>
+                </div>
+
+                <textarea
+                  id="likes"
+                  name="likes"
+                  rows="8"
+                  maxlength="3000"
+                  placeholder="食べ物・趣味・好きな場所・好きな季節・好きな人・大切にしているものなど"
+                ></textarea>
+
+                <p class="field__note">
+                  箇条書きでも文章でも入力できます。
+                </p>
+              </div>
+
+              <!-- ============================
+                   Dislikes
+              ============================= -->
+
+              <div class="field">
+                <div class="field__label field__label--action">
+                  <label for="dislikes">
+                    苦手なもの
+                  </label>
+
+                  <button
+                    class="mini-button"
+                    type="button"
+                    data-copy-target="dislikes"
+                  >
+                    コピー
+                  </button>
+                </div>
+
+                <textarea
+                  id="dislikes"
+                  name="dislikes"
+                  rows="8"
+                  maxlength="3000"
+                  placeholder="苦手な食べ物・嫌いなもの・弱点・恐怖・トラウマなど"
+                ></textarea>
+
+                <p class="field__note">
+                  弱点を書くことで物語に深みが出ます。
+                </p>
+              </div>
+
+              <!-- ============================
+                   Ability
+              ============================= -->
+
+              <div class="field form-grid__wide">
+                <div class="field__label field__label--action">
+                  <label for="abilities">
+                    能力・特技
+                  </label>
+
+                  <button
+                    class="mini-button"
+                    type="button"
+                    data-copy-target="abilities"
+                  >
+                    コピー
+                  </button>
+                </div>
+
+                <textarea
+                  id="abilities"
+                  name="abilities"
+                  rows="10"
+                  maxlength="6000"
+                  placeholder="戦闘能力、特殊能力、魔法、才能、得意分野、身体能力などを詳しく入力してください。"
+                ></textarea>
+
+                <p class="field__note">
+                  能力名・効果・制限・弱点・使用条件まで書くと設定資料として使いやすくなります。
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <!-- ================================
+               Profile Memo
+          ================================= -->
+
+          <section class="form-section card">
+            <div class="form-section__header">
+              <div>
+                <p class="eyebrow">
+                  PROFILE NOTE
+                </p>
+
+                <h2>
+                  プロフィールメモ
+                </h2>
+              </div>
+            </div>
+
+            <div class="guide-grid">
+              <article class="guide-card">
+                <h3>
+                  好きなもの
+                </h3>
+
+                <p>
+                  趣味・休日の過ごし方・好きな食べ物・音楽・動物などを書くと人物像が作りやすくなります。
+                </p>
+              </article>
+
+              <article class="guide-card">
+                <h3>
+                  苦手なもの
+                </h3>
+
+                <p>
+                  弱点や嫌いなものだけでなく、克服したいことやコンプレックスも書いておくと設定が広がります。
+                </p>
+              </article>
+
+              <article class="guide-card">
+                <h3>
+                  能力
+                </h3>
+
+                <p>
+                  能力名・発動条件・射程・代償・制限・相性などを分けて整理すると後から見返しやすくなります。
+                </p>
+              </article>
+            </div>
+          </section>
+                    <!-- ================================
+               Story
+          ================================= -->
+
+          <section
+            class="form-section card"
+            id="storySection"
+          >
+            <div class="form-section__header">
+              <div>
+                <p class="eyebrow">
+                  STORY
+                </p>
+
+                <h2>
+                  生い立ち・背景
+                </h2>
+              </div>
+            </div>
+
+            <div class="form-grid">
+              <div class="field form-grid__wide">
+                <div class="field__label field__label--action">
+                  <label for="background">
+                    生い立ち・設定
+                  </label>
+
+                  <button
+                    class="mini-button"
+                    type="button"
+                    data-copy-target="background"
+                  >
+                    コピー
+                  </button>
+                </div>
+
+                <textarea
+                  id="background"
+                  name="background"
+                  rows="12"
+                  maxlength="10000"
+                  placeholder="出生、幼少期、家族、学校生活、重要な出来事、現在に至るまでの経歴などを入力してください。"
+                ></textarea>
+
+                <p class="field__note">
+                  時系列順に書くと整理しやすくなります。
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <!-- ================================
+               Relationships
+          ================================= -->
+
+          <section
+            class="form-section card"
+            id="relationshipSection"
+          >
+            <div class="form-section__header">
+              <div>
+                <p class="eyebrow">
+                  RELATIONSHIPS
+                </p>
+
+                <h2>
+                  人間関係
+                </h2>
+              </div>
+            </div>
+
+            <div class="form-grid">
+              <div class="field form-grid__wide">
+                <div class="field__label field__label--action">
+                  <label for="relationships">
+                    人間関係・交友関係
+                  </label>
+
+                  <button
+                    class="mini-button"
+                    type="button"
+                    data-copy-target="relationships"
+                  >
+                    コピー
+                  </button>
+                </div>
+
+                <textarea
+                  id="relationships"
+                  name="relationships"
+                  rows="10"
+                  maxlength="8000"
+                  placeholder="家族、親友、ライバル、恋愛関係、師弟関係などを入力してください。"
+                ></textarea>
+
+                <p class="field__note">
+                  相手との関係性や呼び方も書いておくと便利です。
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <!-- ================================
+               Costume
+          ================================= -->
+
+          <section
+            class="form-section card"
+            id="costumeSection"
+          >
+            <div class="form-section__header">
+              <div>
+                <p class="eyebrow">
+                  COSTUME
+                </p>
+
+                <h2>
+                  衣装・服装
+                </h2>
+              </div>
+            </div>
+
+            <div class="form-grid">
+              <div class="field form-grid__wide">
+                <div class="field__label field__label--action">
+                  <label for="costume">
+                    衣装設定
+                  </label>
+
+                  <button
+                    class="mini-button"
+                    type="button"
+                    data-copy-target="costume"
+                  >
+                    コピー
+                  </button>
+                </div>
+
+                <textarea
+                  id="costume"
+                  name="costume"
+                  rows="12"
+                  maxlength="8000"
+                  placeholder="制服、私服、装飾品、アクセサリー、武器、素材、色、デザインなどを入力してください。"
+                ></textarea>
+
+                <p class="field__note">
+                  AI画像生成用プロンプトとしても利用できます。
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <!-- ================================
+               Character Memo
+          ================================= -->
+
+          <section class="form-section card">
+            <div class="form-section__header">
+              <div>
+                <p class="eyebrow">
+                  CHARACTER NOTE
+                </p>
+
+                <h2>
+                  設定メモ
+                </h2>
+              </div>
+            </div>
+
+            <div class="guide-grid">
+              <article class="guide-card">
+                <h3>
+                  生い立ち
+                </h3>
+
+                <p>
+                  幼少期・転機・現在までを時系列で整理すると、設定の矛盾が起きにくくなります。
+                </p>
+              </article>
+
+              <article class="guide-card">
+                <h3>
+                  人間関係
+                </h3>
+
+                <p>
+                  名前だけではなく、感情・信頼度・呼称・立場まで書いておくと物語制作にも活用できます。
+                </p>
+              </article>
+
+              <article class="guide-card">
+                <h3>
+                  衣装
+                </h3>
+
+                <p>
+                  普段着・制服・戦闘服・アクセサリーなど、シーンごとに分けて記録すると管理しやすくなります。
+                </p>
+              </article>
+            </div>
+          </section>
+                    <!-- ================================
+               AI Prompt
+          ================================= -->
+
+          <section
+            class="form-section card"
+            id="promptSection"
+          >
+            <div class="form-section__header">
+              <div>
+                <p class="eyebrow">
+                  AI PROMPT
+                </p>
+
+                <h2>
+                  AI画像生成プロンプト
+                </h2>
+              </div>
+
+              <span class="badge">
+                IMAGE GENERATION
+              </span>
+            </div>
+
+            <div class="form-grid">
+              <!-- Japanese Prompt -->
+
+              <div class="field form-grid__wide">
+                <div class="field__label field__label--action">
+                  <label for="promptJa">
+                    日本語プロンプト
+                  </label>
+
+                  <button
+                    class="mini-button"
+                    type="button"
+                    data-copy-target="promptJa"
+                  >
+                    コピー
+                  </button>
+                </div>
+
+                <textarea
+                  id="promptJa"
+                  name="promptJa"
+                  rows="12"
+                  maxlength="12000"
+                  placeholder="キャラクターの外見、衣装、表情、ポーズ、構図、背景、光、画風などを日本語で入力してください。"
+                ></textarea>
+
+                <p class="field__note">
+                  外見・衣装・構図・背景・光の順に整理すると使いやすくなります。
+                </p>
+              </div>
+
+              <!-- English Prompt -->
+
+              <div class="field form-grid__wide">
+                <div class="field__label field__label--action">
+                  <label for="promptEn">
+                    英語プロンプト
+                  </label>
+
+                  <button
+                    class="mini-button"
+                    type="button"
+                    data-copy-target="promptEn"
+                  >
+                    コピー
+                  </button>
+                </div>
+
+                <textarea
+                  id="promptEn"
+                  name="promptEn"
+                  rows="12"
+                  maxlength="12000"
+                  placeholder="masterpiece, best quality, anime boy, detailed eyes..."
+                ></textarea>
+
+                <p class="field__note">
+                  使用する画像生成サービスに合わせてタグ形式・文章形式を使い分けてください。
+                </p>
+              </div>
+
+              <!-- Negative Prompt -->
+
+              <div class="field form-grid__wide">
+                <div class="field__label field__label--action">
+                  <label for="negativePrompt">
+                    ネガティブプロンプト
+                  </label>
+
+                  <button
+                    class="mini-button"
+                    type="button"
+                    data-copy-target="negativePrompt"
+                  >
+                    コピー
+                  </button>
+                </div>
+
+                <textarea
+                  id="negativePrompt"
+                  name="negativePrompt"
+                  rows="8"
+                  maxlength="8000"
+                  placeholder="low quality, blurry, bad anatomy, extra fingers, duplicate..."
+                ></textarea>
+
+                <p class="field__note">
+                  出したくない要素、崩れやすい部分、不要な背景や小物などを入力してください。
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <!-- ================================
+               Free Notes
+          ================================= -->
+
+          <section
+            class="form-section card"
+            id="notesSection"
+          >
+            <div class="form-section__header">
+              <div>
+                <p class="eyebrow">
+                  NOTES
+                </p>
+
+                <h2>
+                  自由メモ
+                </h2>
+              </div>
+            </div>
+
+            <div class="form-grid">
+              <div class="field form-grid__wide">
+                <div class="field__label field__label--action">
+                  <label for="notes">
+                    その他の設定・メモ
+                  </label>
+
+                  <button
+                    class="mini-button"
+                    type="button"
+                    data-copy-target="notes"
+                  >
+                    コピー
+                  </button>
+                </div>
+
+                <textarea
+                  id="notes"
+                  name="notes"
+                  rows="12"
+                  maxlength="12000"
+                  placeholder="まだ分類していない設定、制作メモ、修正予定、台詞案、物語のアイデアなどを自由に入力してください。"
+                ></textarea>
+              </div>
+            </div>
+          </section>
+
+          <!-- ================================
+               Save Actions
+          ================================= -->
+
+          <section class="form-actions card">
+            <div class="form-actions__status">
+              <p class="form-actions__label">
+                最終更新
+              </p>
+
+              <p
+                class="form-actions__date"
+                id="updatedAt"
+              >
+                未保存
+              </p>
+            </div>
+
+            <div class="form-actions__buttons">
+              <button
+                class="button button--sub"
+                id="duplicateButton"
+                type="button"
+              >
+                複製
+              </button>
+
+              <button
+                class="button button--danger"
+                id="deleteButton"
+                type="button"
+                hidden
+              >
+                削除
+              </button>
+
+              <button
+                class="button button--primary"
+                id="saveButton"
+                type="submit"
+              >
+                保存する
+              </button>
+            </div>
+          </section>
+        </form>
+      </div>
+    </main>
+  </div>
+
+  <!-- ================================
+       Toast
+  ================================= -->
+
+  <div
+    class="toast"
+    id="toast"
+    role="status"
+    aria-live="polite"
+    hidden
+  >
+    <p id="toastMessage">
+      保存しました。
+    </p>
+  </div>
+
+  <!-- ================================
+       Delete Dialog
+  ================================= -->
+
+  <dialog
+    class="dialog"
+    id="deleteDialog"
+  >
+    <div class="dialog__inner">
+      <div class="dialog__header">
+        <div>
+          <p class="eyebrow">
+            DELETE CHARACTER
+          </p>
+
+          <h2>
+            キャラクターを削除しますか？
+          </h2>
+        </div>
+
+        <button
+          class="dialog__close"
+          id="deleteDialogClose"
+          type="button"
+          aria-label="閉じる"
+        >
+          ×
+        </button>
+      </div>
+
+      <div class="dialog__body">
+        <p>
+          削除したキャラクター情報は元に戻せません。
+        </p>
+
+        <p class="dialog__target">
+          対象：
+          <strong id="deleteTargetName">
+            未設定
+          </strong>
+        </p>
+      </div>
+
+      <div class="dialog__actions">
+        <button
+          class="button button--sub"
+          id="deleteCancelButton"
+          type="button"
+        >
+          キャンセル
+        </button>
+
+        <button
+          class="button button--danger"
+          id="deleteConfirmButton"
+          type="button"
+        >
+          削除する
+        </button>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- ================================
+       Unsaved Changes Dialog
+  ================================= -->
+
+  <dialog
+    class="dialog"
+    id="unsavedDialog"
+  >
+    <div class="dialog__inner">
+      <div class="dialog__header">
+        <div>
+          <p class="eyebrow">
+            UNSAVED CHANGES
+          </p>
+
+          <h2>
+            保存されていない変更があります
+          </h2>
+        </div>
+
+        <button
+          class="dialog__close"
+          id="unsavedDialogClose"
+          type="button"
+          aria-label="閉じる"
+        >
+          ×
+        </button>
+      </div>
+
+      <div class="dialog__body">
+        <p>
+          このページを離れると、入力中の変更が失われる可能性があります。
+        </p>
+      </div>
+
+      <div class="dialog__actions">
+        <button
+          class="button button--sub"
+          id="unsavedStayButton"
+          type="button"
+        >
+          編集を続ける
+        </button>
+
+        <button
+          class="button button--danger"
+          id="unsavedLeaveButton"
+          type="button"
+        >
+          保存せず移動
+        </button>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- ================================
+       Scripts
+  ================================= -->
+
+  <script src="js/storage.js"></script>
+  <script src="js/common.js"></script>
+  <script src="js/character.js"></script>
+</body>
+</html>

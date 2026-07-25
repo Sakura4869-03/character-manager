@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="description" content="オリジナルキャラクターの設定やイメージ画像を管理するツール">
+
+    <title>Character Archive</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/index.css">
+
+    <!-- JavaScript -->
+    <script src="js/storage.js" defer></script>
+    <script src="js/common.js" defer></script>
+    <script src="js/index.js" defer></script>
+</head>
+
+<body>
+
+    <div class="app">
+
+        <!-- サイドメニュー -->
+        <aside class="sidebar" id="sidebar">
+
+            <div class="sidebar__header">
+
+                <a class="brand" href="index.html">
+
+                    <span class="brand__mark">
+                        ✦
+                    </span>
+
+                    <span class="brand__text">
+                        <strong>Character Archive</strong>
+                        <small>Original Character Manager</small>
+                    </span>
+
+                </a>
+
+                <button class="icon-button sidebar__close" id="sidebarClose" type="button" aria-label="メニューを閉じる">
+                    ×
+                </button>
+
+            </div>
+
+            <nav class="sidebar__nav" aria-label="メインメニュー">
+
+                <a class="sidebar__link is-active" href="index.html">
+                    <span class="sidebar__icon">♙</span>
+                    キャラクター
+                </a>
+
+                <button class="sidebar__link sidebar__button" id="backupButton" type="button">
+                    <span class="sidebar__icon">⇩</span>
+                    バックアップ
+                </button>
+
+                <button class="sidebar__link sidebar__button" id="restoreButton" type="button">
+                    <span class="sidebar__icon">⇧</span>
+                    復元
+                </button>
+
+                <input id="restoreInput" type="file" accept=".json,application/json" hidden>
+
+            </nav>
+
+            <div class="sidebar__note">
+                <p>
+                    データは、このブラウザ内に保存されます。
+                </p>
+
+                <p>
+                    定期的にバックアップしてください。
+                </p>
+            </div>
+
+        </aside>
+
+        <!-- スマホ用メニュー背景 -->
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+        <!-- メインコンテンツ -->
+        <main class="main">
+
+            <!-- ページ上部 -->
+            <header class="topbar">
+
+                <button class="icon-button topbar__menu" id="sidebarOpen" type="button" aria-label="メニューを開く">
+                    ☰
+                </button>
+
+                <div class="topbar__heading">
+
+                    <p class="eyebrow">
+                        CHARACTER COLLECTION
+                    </p>
+
+                    <h1>
+                        キャラクター一覧
+                    </h1>
+
+                </div>
+
+                <a class="button button--primary topbar__create" href="character.html">
+                    <span>＋</span>
+                    新規作成
+                </a>
+
+            </header>
+
+            <!-- 検索・絞り込み -->
+            <section class="toolbar" aria-label="検索と絞り込み">
+
+                <label class="search-box">
+
+                    <span class="search-box__icon">
+                        ⌕
+                    </span>
+
+                    <input id="searchInput" type="search" placeholder="名前・作品・タグ・設定から検索" autocomplete="off">
+
+                </label>
+
+                <label class="select-box">
+
+                    <span class="select-box__label">
+                        作品
+                    </span>
+
+                    <select id="workFilter">
+
+                        <option value="">
+                            すべて
+                        </option>
+
+                    </select>
+
+                </label>
+
+                <label class="select-box">
+
+                    <span class="select-box__label">
+                        並び順
+                    </span>
+
+                    <select id="sortSelect">
+
+                        <option value="updated-desc">
+                            更新が新しい順
+                        </option>
+
+                        <option value="updated-asc">
+                            更新が古い順
+                        </option>
+
+                        <option value="name-asc">
+                            名前順
+                        </option>
+
+                        <option value="created-desc">
+                            作成が新しい順
+                        </option>
+
+                    </select>
+
+                </label>
+
+            </section>
+
+            <!-- 件数・タグ絞り込み -->
+            <section class="summary-bar">
+
+                <p class="summary-bar__count">
+                    <strong id="characterCount">
+                        0
+                    </strong>
+
+                    <span>
+                        characters
+                    </span>
+                </p>
+
+                <div class="tag-filter" id="tagFilter" aria-label="タグ絞り込み"></div>
+
+            </section>
+
+            <!-- キャラクターカード表示場所 -->
+            <section class="character-grid" id="characterGrid" aria-live="polite"></section>
+
+            <!-- キャラクター未登録時 -->
+            <section class="empty-state" id="emptyState" hidden>
+
+                <div class="empty-state__icon">
+                    ✦
+                </div>
+
+                <h2>
+                    まだキャラクターが登録されていません
+                </h2>
+
+                <p>
+                    最初のキャラクター設定を作成してみましょう。
+                </p>
+
+                <a class="button button--primary" href="character.html">
+                    ＋ キャラクターを作成
+                </a>
+
+            </section>
+
+        </main>
+
+    </div>
+
+    <!-- 通知メッセージ -->
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+</body>
+
+</html>

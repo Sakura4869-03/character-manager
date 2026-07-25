@@ -1,0 +1,980 @@
+/* ==========================================
+   Common
+========================================== */
+
+:root {
+  /* Base Colors */
+  --color-bg: #0b1020;
+  --color-bg-soft: #10172a;
+
+  --color-surface: #171f34;
+  --color-surface-light: #202a43;
+  --color-surface-hover: #293550;
+
+  --color-border: #303c59;
+  --color-border-light: #3d4968;
+
+  --color-text: #f8f6ef;
+  --color-text-sub: #aab4ca;
+  --color-text-muted: #6f7a91;
+
+  --color-gold: #cdaa5d;
+  --color-gold-light: #e3c879;
+
+  --color-accent: #7a8fff;
+  --color-accent-hover: #92a2ff;
+  --color-accent-dark: #6176e8;
+
+  --color-danger: #ee7882;
+  --color-success: #65d6a6;
+
+  /* Shadow */
+  --shadow-sm: 0 8px 20px rgba(0, 0, 0, 0.16);
+  --shadow-md: 0 16px 36px rgba(0, 0, 0, 0.22);
+  --shadow-lg: 0 24px 60px rgba(0, 0, 0, 0.28);
+
+  /* Radius */
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-round: 999px;
+
+  /* Layout */
+  --sidebar-width: 260px;
+  --content-max-width: 1500px;
+
+  /* Transition */
+  --transition-fast: 0.2s ease;
+  --transition-normal: 0.3s ease;
+}
+
+/* ==========================================
+   Base
+========================================== */
+
+html {
+  min-height: 100%;
+  background-color: var(--color-bg);
+}
+
+body {
+  min-height: 100vh;
+
+  color: var(--color-text);
+
+  background:
+    radial-gradient(
+      circle at 85% -10%,
+      rgba(122, 143, 255, 0.17),
+      transparent 32rem
+    ),
+    radial-gradient(
+      circle at -10% 90%,
+      rgba(205, 170, 93, 0.1),
+      transparent 30rem
+    ),
+    var(--color-bg);
+
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    "Hiragino Kaku Gothic ProN",
+    "Yu Gothic",
+    "YuGothic",
+    Meiryo,
+    sans-serif;
+
+  line-height: 1.7;
+  letter-spacing: 0.02em;
+}
+
+body.is-menu-open {
+  overflow: hidden;
+}
+
+button,
+a,
+input,
+textarea,
+select {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button,
+a {
+  transition:
+    opacity var(--transition-fast),
+    color var(--transition-fast),
+    background-color var(--transition-fast),
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast),
+    transform var(--transition-fast);
+}
+
+/* ==========================================
+   Typography
+========================================== */
+
+h1,
+h2,
+h3,
+h4 {
+  line-height: 1.4;
+}
+
+p {
+  line-height: 1.8;
+}
+
+.eyebrow {
+  color: var(--color-gold);
+
+  font-size: 11px;
+  font-weight: 800;
+
+  line-height: 1.4;
+  letter-spacing: 0.18em;
+}
+
+.text-muted {
+  color: var(--color-text-sub);
+}
+
+.text-danger {
+  color: var(--color-danger);
+}
+
+.text-success {
+  color: var(--color-success);
+}
+
+/* ==========================================
+   Form Base
+========================================== */
+
+input,
+textarea,
+select {
+  width: 100%;
+
+  color: var(--color-text);
+
+  background-color: rgba(8, 13, 26, 0.68);
+
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+
+  transition:
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast),
+    background-color var(--transition-fast);
+}
+
+input,
+select {
+  min-height: 48px;
+  padding: 0 14px;
+}
+
+textarea {
+  min-height: 120px;
+  padding: 13px 14px;
+
+  line-height: 1.8;
+}
+
+input:hover,
+textarea:hover,
+select:hover {
+  border-color: var(--color-border-light);
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  background-color: rgba(10, 16, 32, 0.94);
+
+  border-color: var(--color-accent);
+
+  box-shadow:
+    0 0 0 3px rgba(122, 143, 255, 0.13);
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--color-text-muted);
+}
+
+select {
+  cursor: pointer;
+}
+
+select option {
+  color: var(--color-text);
+  background-color: var(--color-surface);
+}
+
+/* Chrome・Safariの自動入力対策 */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+  -webkit-text-fill-color: var(--color-text);
+  -webkit-box-shadow:
+    0 0 0 1000px rgba(8, 13, 26, 1) inset;
+
+  transition:
+    background-color 9999s ease-out;
+}
+
+/* ==========================================
+   Button
+========================================== */
+
+.button {
+  display: inline-flex;
+
+  min-height: 44px;
+
+  align-items: center;
+  justify-content: center;
+
+  gap: 8px;
+
+  padding: 10px 17px;
+
+  border: 1px solid transparent;
+  border-radius: 12px;
+
+  font-size: 14px;
+  font-weight: 700;
+
+  line-height: 1.2;
+
+  white-space: nowrap;
+
+  cursor: pointer;
+}
+
+.button:hover {
+  transform: translateY(-1px);
+}
+
+.button:active {
+  transform: translateY(0);
+}
+
+.button--primary {
+  color: #ffffff;
+
+  background:
+    linear-gradient(
+      135deg,
+      var(--color-accent),
+      var(--color-accent-dark)
+    );
+
+  box-shadow:
+    0 8px 24px rgba(87, 107, 222, 0.25);
+}
+
+.button--primary:hover {
+  background:
+    linear-gradient(
+      135deg,
+      var(--color-accent-hover),
+      #7185f2
+    );
+
+  box-shadow:
+    0 10px 28px rgba(87, 107, 222, 0.34);
+}
+
+.button--secondary {
+  color: var(--color-text);
+
+  background-color: var(--color-surface-light);
+
+  border-color: var(--color-border);
+}
+
+.button--secondary:hover {
+  background-color: var(--color-surface-hover);
+
+  border-color: var(--color-border-light);
+}
+
+.button--danger {
+  color: var(--color-danger);
+
+  border-color: rgba(238, 120, 130, 0.5);
+}
+
+.button--danger:hover {
+  color: #ffffff;
+
+  background-color: rgba(238, 120, 130, 0.16);
+
+  border-color: var(--color-danger);
+}
+
+.button--ghost {
+  background-color: transparent;
+}
+
+.button--large {
+  min-width: 180px;
+  min-height: 50px;
+
+  padding-right: 24px;
+  padding-left: 24px;
+
+  font-size: 15px;
+}
+
+/* ==========================================
+   Icon Button
+========================================== */
+
+.icon-button {
+  display: inline-grid;
+
+  width: 44px;
+  height: 44px;
+
+  flex: 0 0 auto;
+
+  place-items: center;
+
+  color: var(--color-text);
+
+  background-color: transparent;
+
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+
+  font-size: 20px;
+  line-height: 1;
+
+  cursor: pointer;
+}
+
+.icon-button:hover {
+  background-color: var(--color-surface-light);
+
+  border-color: var(--color-border-light);
+}
+
+/* ==========================================
+   Field
+========================================== */
+
+.field{
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+
+.field__label{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+
+  gap:12px;
+
+  font-size:14px;
+  font-weight:700;
+
+  color:var(--color-text);
+}
+
+.field__label em{
+  padding:2px 8px;
+
+  color:#ffffff;
+
+  background:var(--color-danger);
+
+  border-radius:999px;
+
+  font-size:10px;
+  font-style:normal;
+  font-weight:700;
+}
+
+.field__label--action{
+  align-items:center;
+}
+
+.field__note{
+  color:var(--color-text-sub);
+
+  font-size:12px;
+  line-height:1.6;
+}
+
+/* ==========================================
+   Mini Button
+========================================== */
+
+.mini-button{
+
+  display:inline-flex;
+
+  align-items:center;
+  justify-content:center;
+
+  min-height:30px;
+
+  padding:0 12px;
+
+  color:var(--color-text);
+
+  background:var(--color-surface);
+
+  border:1px solid var(--color-border);
+
+  border-radius:8px;
+
+  font-size:12px;
+  font-weight:700;
+}
+
+.mini-button:hover{
+
+  background:var(--color-surface-hover);
+
+  border-color:var(--color-accent);
+
+}
+
+/* ==========================================
+   Text Button
+========================================== */
+
+.text-button{
+
+  color:var(--color-accent);
+
+  font-size:13px;
+  font-weight:700;
+}
+
+.text-button:hover{
+
+  color:var(--color-accent-hover);
+
+}
+
+/* ==========================================
+   Card
+========================================== */
+
+.card{
+
+  background:rgba(23,31,52,.9);
+
+  border:1px solid var(--color-border);
+
+  border-radius:var(--radius-md);
+
+  box-shadow:var(--shadow-sm);
+
+}
+
+.card--padding{
+
+  padding:24px;
+
+}
+
+/* ==========================================
+   Badge
+========================================== */
+
+.badge{
+
+  display:inline-flex;
+
+  align-items:center;
+  justify-content:center;
+
+  min-height:24px;
+
+  padding:0 10px;
+
+  color:var(--color-text);
+
+  background:rgba(122,143,255,.12);
+
+  border:1px solid rgba(122,143,255,.35);
+
+  border-radius:999px;
+
+  font-size:11px;
+  font-weight:700;
+}
+
+.badge--gold{
+
+  color:var(--color-gold);
+
+  background:rgba(205,170,93,.10);
+
+  border-color:rgba(205,170,93,.35);
+
+}
+
+/* ==========================================
+   Toast
+========================================== */
+
+.toast{
+
+  position:fixed;
+
+  right:24px;
+  bottom:24px;
+
+  z-index:9999;
+
+  display:flex;
+  align-items:center;
+
+  max-width:380px;
+
+  padding:14px 18px;
+
+  color:#07120e;
+
+  background:var(--color-success);
+
+  border-radius:14px;
+
+  box-shadow:var(--shadow-lg);
+
+  font-size:14px;
+  font-weight:700;
+
+  opacity:0;
+
+  pointer-events:none;
+
+  transform:translateY(15px);
+
+  transition:
+    opacity .25s ease,
+    transform .25s ease;
+
+}
+
+.toast.is-visible{
+
+  opacity:1;
+
+  transform:translateY(0);
+
+}
+
+.toast.is-error{
+
+  color:#ffffff;
+
+  background:var(--color-danger);
+
+}
+
+/* ==========================================
+   Scrollbar
+========================================== */
+
+::-webkit-scrollbar{
+
+  width:10px;
+  height:10px;
+
+}
+
+::-webkit-scrollbar-track{
+
+  background:#111827;
+
+}
+
+::-webkit-scrollbar-thumb{
+
+  background:#404c69;
+
+  border-radius:999px;
+
+}
+
+::-webkit-scrollbar-thumb:hover{
+
+  background:#586581;
+
+}
+
+/* Firefox */
+
+*{
+
+  scrollbar-width:thin;
+
+  scrollbar-color:#404c69 #111827;
+
+}
+
+/* ==========================================
+   Utility
+========================================== */
+
+.hidden{
+  display:none !important;
+}
+
+.flex{
+  display:flex;
+}
+
+.grid{
+  display:grid;
+}
+
+.center{
+
+  display:flex;
+
+  align-items:center;
+  justify-content:center;
+
+}
+
+.w-full{
+  width:100%;
+}
+
+.mt-8{
+  margin-top:8px;
+}
+
+.mt-16{
+  margin-top:16px;
+}
+
+.mt-24{
+  margin-top:24px;
+}
+
+.mb-8{
+  margin-bottom:8px;
+}
+
+.mb-16{
+  margin-bottom:16px;
+}
+
+.mb-24{
+  margin-bottom:24px;
+}
+
+.text-center{
+  text-align:center;
+}
+
+.text-right{
+  text-align:right;
+}
+
+/* ==========================================
+   Common Animation
+========================================== */
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.fade-in {
+  animation: fade-in 0.35s ease both;
+}
+
+.fade-up {
+  animation: fade-up 0.4s ease both;
+}
+
+/* ==========================================
+   Loading
+========================================== */
+
+.loading {
+  position: relative;
+
+  display: grid;
+
+  min-height: 180px;
+
+  place-items: center;
+}
+
+.loading::before {
+  width: 36px;
+  height: 36px;
+
+  border: 3px solid var(--color-border);
+  border-top-color: var(--color-accent);
+  border-radius: 50%;
+
+  content: "";
+
+  animation: spin 0.8s linear infinite;
+}
+
+.loading-text {
+  color: var(--color-text-sub);
+
+  font-size: 13px;
+
+  text-align: center;
+}
+
+/* ==========================================
+   Empty State
+========================================== */
+
+.empty-state {
+  max-width: 620px;
+
+  margin: 70px auto 0;
+  padding: 54px 28px;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(27, 36, 59, 0.9),
+      rgba(18, 25, 43, 0.95)
+    );
+
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+
+  box-shadow: var(--shadow-md);
+
+  text-align: center;
+}
+
+.empty-state[hidden] {
+  display: none;
+}
+
+.empty-state__icon {
+  display: grid;
+
+  width: 70px;
+  height: 70px;
+
+  margin: 0 auto 20px;
+
+  place-items: center;
+
+  color: var(--color-gold);
+
+  background-color: rgba(205, 170, 93, 0.1);
+
+  border: 1px solid rgba(205, 170, 93, 0.38);
+  border-radius: 50%;
+
+  font-size: 30px;
+}
+
+.empty-state h2 {
+  font-size: 21px;
+}
+
+.empty-state p {
+  margin-top: 8px;
+
+  color: var(--color-text-sub);
+
+  font-size: 13px;
+}
+
+.empty-state .button {
+  margin-top: 24px;
+}
+
+/* ==========================================
+   Accessibility
+========================================== */
+
+.sr-only {
+  position: absolute;
+
+  width: 1px;
+  height: 1px;
+
+  overflow: hidden;
+
+  padding: 0;
+  margin: -1px;
+
+  clip: rect(0, 0, 0, 0);
+
+  white-space: nowrap;
+
+  border: 0;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+button:disabled,
+input:disabled,
+textarea:disabled,
+select:disabled {
+  cursor: not-allowed;
+
+  opacity: 0.55;
+}
+
+/* ==========================================
+   Tablet
+========================================== */
+
+@media screen and (max-width: 1024px) {
+  :root {
+    --sidebar-width: 230px;
+  }
+
+  .button--large {
+    min-width: 150px;
+  }
+}
+
+/* ==========================================
+   Smartphone
+========================================== */
+
+@media screen and (max-width: 767px) {
+  body {
+    font-size: 14px;
+  }
+
+  .eyebrow {
+    font-size: 10px;
+  }
+
+  input,
+  select {
+    min-height: 46px;
+  }
+
+  textarea {
+    min-height: 110px;
+  }
+
+  .button {
+    min-height: 46px;
+
+    padding-right: 15px;
+    padding-left: 15px;
+  }
+
+  .button--large {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .toast {
+    right: 16px;
+    bottom: 16px;
+    left: 16px;
+
+    max-width: none;
+  }
+
+  .empty-state {
+    margin-top: 42px;
+    padding: 42px 20px;
+  }
+
+  .empty-state__icon {
+    width: 62px;
+    height: 62px;
+
+    font-size: 26px;
+  }
+
+  .empty-state h2 {
+    font-size: 18px;
+  }
+}
+
+/* ==========================================
+   Small Smartphone
+========================================== */
+
+@media screen and (max-width: 420px) {
+  .button {
+    font-size: 13px;
+  }
+
+  .icon-button {
+    width: 42px;
+    height: 42px;
+  }
+
+  .field__label {
+    font-size: 13px;
+  }
+
+  .empty-state {
+    padding-right: 16px;
+    padding-left: 16px;
+  }
+}
+
+/* ==========================================
+   Reduced Motion
+========================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+
+    transition-duration: 0.01ms !important;
+  }
+}
