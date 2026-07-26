@@ -1,0 +1,1384 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+  <meta
+    name="description"
+    content="創作アイテム・武器・道具を登録・編集・管理するためのローカルWebアプリです。"
+  >
+
+  <title>アイテム編集 | Creative Archive</title>
+
+  <link
+    rel="stylesheet"
+    href="css/reset.css"
+  >
+  <link
+    rel="stylesheet"
+    href="css/common.css"
+  >
+  <link
+    rel="stylesheet"
+    href="css/character.css"
+  >
+</head>
+
+<body>
+  <div class="app">
+
+    <!-- ==================================================
+         Sidebar
+    =================================================== -->
+    <aside
+      class="sidebar"
+      id="sidebar"
+      aria-label="メインメニュー"
+    >
+      <div class="sidebar__header">
+        <a
+          class="brand"
+          href="index.html?view=item"
+          aria-label="アイテム一覧へ戻る"
+        >
+          <span
+            class="brand__mark"
+            aria-hidden="true"
+          >
+            ✦
+          </span>
+
+          <span class="brand__text">
+            <strong>
+              Creative Archive
+            </strong>
+
+            <small>
+              創作資料管理
+            </small>
+          </span>
+        </a>
+
+        <button
+          class="icon-button sidebar__close"
+          id="sidebarClose"
+          type="button"
+          aria-label="メニューを閉じる"
+        >
+          ×
+        </button>
+      </div>
+
+      <nav class="sidebar__nav">
+        <a
+          class="sidebar__link"
+          href="index.html?view=item"
+        >
+          <span
+            class="sidebar__icon"
+            aria-hidden="true"
+          >
+            ◇
+          </span>
+
+          <span>
+            アイテム
+          </span>
+        </a>
+
+        <button
+          class="sidebar__link sidebar__button is-active"
+          type="button"
+          data-new-item
+        >
+          <span
+            class="sidebar__icon"
+            aria-hidden="true"
+          >
+            ＋
+          </span>
+
+          <span>
+            新規アイテム
+          </span>
+        </button>
+
+        <button
+          class="sidebar__link sidebar__button js-duplicate-item"
+          type="button"
+        >
+          <span
+            class="sidebar__icon"
+            aria-hidden="true"
+          >
+            ⧉
+          </span>
+
+          <span>
+            このアイテムを複製
+          </span>
+        </button>
+
+        <button
+          class="sidebar__link sidebar__button"
+          id="exportItemButton"
+          type="button"
+        >
+          <span
+            class="sidebar__icon"
+            aria-hidden="true"
+          >
+            ⇩
+          </span>
+
+          <span>
+            JSONを書き出す
+          </span>
+        </button>
+
+        <button
+          class="sidebar__link sidebar__button"
+          id="printButton"
+          type="button"
+        >
+          <span
+            class="sidebar__icon"
+            aria-hidden="true"
+          >
+            ▣
+          </span>
+
+          <span>
+            設定資料を印刷
+          </span>
+        </button>
+      </nav>
+
+      <div class="sidebar__note">
+        <p>
+          入力内容は、このブラウザ内に保存されます。
+        </p>
+      </div>
+    </aside>
+
+    <button
+      class="sidebar-overlay"
+      id="sidebarOverlay"
+      type="button"
+      aria-label="メニューを閉じる"
+    ></button>
+
+    <!-- ==================================================
+         Main
+    =================================================== -->
+    <main class="main character-main">
+
+      <!-- Editor Header -->
+      <header class="editor-header">
+        <div class="editor-header__left">
+          <button
+            class="icon-button topbar__menu"
+            id="sidebarOpen"
+            type="button"
+            aria-label="メニューを開く"
+          >
+            ☰
+          </button>
+
+          <div>
+            <p class="eyebrow">
+              ITEM EDITOR
+            </p>
+
+            <h1 id="pageTitle">
+              新規アイテム
+            </h1>
+
+            <p
+              class="editor-header__status"
+              id="saveStatus"
+              aria-live="polite"
+            >
+              未保存
+            </p>
+          </div>
+        </div>
+
+        <div class="editor-header__actions">
+          <a
+            class="button button--secondary"
+            href="index.html?view=item"
+          >
+            一覧へ戻る
+          </a>
+
+          <button
+            class="button button--primary button--large js-save-item"
+            type="submit"
+            form="itemForm"
+          >
+            保存する
+          </button>
+        </div>
+      </header>
+
+      <!-- Editor Layout -->
+      <div class="editor-layout">
+
+        <!-- ==================================================
+             Preview
+        =================================================== -->
+        <aside class="preview-panel">
+          <div class="preview-card card">
+            <div class="preview-card__image">
+              <div
+                class="preview-card__placeholder"
+                aria-hidden="true"
+              >
+                <span
+                  class="preview-card__placeholder-icon"
+                  id="previewInitial"
+                >
+                  ◇
+                </span>
+
+                <span>
+                  アイテム
+                </span>
+              </div>
+
+              <span
+                class="preview-card__color"
+                id="themeColorPreview"
+                aria-hidden="true"
+              ></span>
+            </div>
+
+            <div class="preview-card__body">
+              <p
+                class="preview-card__work"
+                id="workPreview"
+              >
+                作品未設定
+              </p>
+
+              <h2 id="namePreview">
+                アイテム名未設定
+              </h2>
+
+              <p
+                class="preview-card__title"
+                id="categoryPreview"
+              >
+                分類未設定
+              </p>
+
+              <p
+                class="preview-card__summary"
+                id="summaryPreview"
+              >
+                アイテムの概要を入力すると、ここに表示されます。
+              </p>
+
+              <div
+                class="preview-card__tags"
+                id="tagPreview"
+              ></div>
+            </div>
+          </div>
+
+          <div class="preview-actions">
+            <button
+              class="button button--secondary w-full"
+              id="scrollToPromptButton"
+              type="button"
+            >
+              プロンプト欄へ移動
+            </button>
+          </div>
+        </aside>
+
+        <!-- ==================================================
+             Form
+        =================================================== -->
+        <form
+          class="character-form"
+          id="itemForm"
+          novalidate
+        >
+          <input
+            id="itemId"
+            name="id"
+            type="hidden"
+          >
+
+          <!-- ==============================================
+               Basic Information
+          =============================================== -->
+          <section class="form-section card">
+            <div class="form-section__header">
+              <div>
+                <p class="eyebrow">
+                  BASIC INFORMATION
+                </p>
+
+                <h2>
+                  基本情報
+                </h2>
+              </div>
+
+              <span class="badge badge--gold">
+                必須項目あり
+              </span>
+            </div>
+
+            <div class="form-grid">
+
+              <div class="field form-grid__wide">
+                <label
+                  class="field__label"
+                  for="name"
+                >
+                  <span>
+                    アイテム名
+                  </span>
+
+                  <em>
+                    必須
+                  </em>
+                </label>
+
+                <input
+                  id="name"
+                  name="name"
+                  type="text"
+                  maxlength="150"
+                  autocomplete="off"
+                  placeholder="例：星導の鍵"
+                  required
+                >
+
+                <p
+                  class="field__error"
+                  id="nameError"
+                  hidden
+                >
+                  アイテム名を入力してください。
+                </p>
+              </div>
+
+              <div class="field">
+                <label
+                  class="field__label"
+                  for="reading"
+                >
+                  読み方
+                </label>
+
+                <input
+                  id="reading"
+                  name="reading"
+                  type="text"
+                  maxlength="150"
+                  autocomplete="off"
+                  placeholder="例：せいどうのかぎ"
+                >
+              </div>
+
+              <div class="field">
+                <label
+                  class="field__label"
+                  for="category"
+                >
+                  分類
+                </label>
+
+                <input
+                  id="category"
+                  name="category"
+                  type="text"
+                  maxlength="100"
+                  autocomplete="off"
+                  placeholder="例：武器・道具・装飾品・神器"
+                >
+              </div>
+
+              <div class="field">
+                <label
+                  class="field__label"
+                  for="rarity"
+                >
+                  希少度・ランク
+                </label>
+
+                <input
+                  id="rarity"
+                  name="rarity"
+                  type="text"
+                  maxlength="100"
+                  autocomplete="off"
+                  placeholder="例：伝説級・Sランク・一点物"
+                >
+              </div>
+
+              <div class="field">
+                <label
+                  class="field__label"
+                  for="status"
+                >
+                  状態
+                </label>
+
+                <input
+                  id="status"
+                  name="status"
+                  type="text"
+                  maxlength="100"
+                  autocomplete="off"
+                  placeholder="例：現存・封印中・破損・消失"
+                >
+              </div>
+
+              <div class="field form-grid__wide">
+                <label
+                  class="field__label"
+                  for="series"
+                >
+                  作品・シリーズ名
+                </label>
+
+                <input
+                  id="series"
+                  name="series"
+                  type="text"
+                  maxlength="150"
+                  autocomplete="off"
+                  placeholder="例：天星学園 キャラクター設定資料集"
+                >
+              </div>
+
+              <div class="field form-grid__wide">
+                <label
+                  class="field__label"
+                  for="tags"
+                >
+                  タグ
+                </label>
+
+                <input
+                  id="tags"
+                  name="tags"
+                  type="text"
+                  maxlength="400"
+                  autocomplete="off"
+                  placeholder="例：神器, 星, 鍵, 太陽棟"
+                >
+
+                <p class="field__note">
+                  カンマ、読点、改行で区切って入力してください。
+                </p>
+              </div>
+
+              <div class="field form-grid__wide">
+                <label
+                  class="field__label"
+                  for="summary"
+                >
+                  短い概要
+                </label>
+
+                <textarea
+                  id="summary"
+                  name="summary"
+                  rows="5"
+                  maxlength="1200"
+                  placeholder="一覧カードにも表示する短い説明を入力してください。"
+                ></textarea>
+              </div>
+
+              <div class="field">
+                <label
+                  class="field__label"
+                  for="themeColor"
+                >
+                  テーマカラー
+                </label>
+
+                <div class="color-field">
+                  <input
+                    id="themeColorPicker"
+                    type="color"
+                    value="#8A6AB8"
+                    aria-label="テーマカラーを選択"
+                  >
+
+                  <input
+                    id="themeColor"
+                    name="themeColor"
+                    type="text"
+                    maxlength="7"
+                    value="#8A6AB8"
+                    pattern="^#[0-9A-Fa-f]{6}$"
+                    placeholder="#8A6AB8"
+                  >
+                </div>
+
+                <p
+                  class="field__error"
+                  id="themeColorError"
+                  hidden
+                >
+                  6桁のHEXカラーコードを入力してください。
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <!-- ==============================================
+               Appearance
+          =============================================== -->
+          <section class="form-section card">
+            <div class="form-section__header">
+              <div>
+                <p class="eyebrow">
+                  APPEARANCE
+                </p>
+
+                <h2>
+                  外観・構造
+                </h2>
+              </div>
+
+              <span class="badge">
+                DESIGN
+              </span>
+            </div>
+
+            <div class="form-grid">
+              <div class="field form-grid__wide">
+                <div class="field__label field__label--action">
+                  <label for="appearance">
+                    外観・デザイン
+                  </label>
+
+                  <button
+                    class="mini-button"
+                    type="button"
+                    data-copy-target="appearance"
+                  >
+                    コピー
+                  </button>
+                </div>
+
+                <textarea
+                  id="appearance"
+                  name="appearance"
+                  rows="9"
+                  maxlength="6000"
+                  placeholder="形状、色、素材、装飾、質感、サイズ感などを詳しく入力してください。"
+                ></textarea>
+              </div>
+
+              <div class="field">
+                <label
+                  class="field__label"
+                  for="material"
+                >
+                  素材
+                </label>
+
+                <textarea
+                  id="material"
+                  name="material"
+                  rows="5"
+                  maxlength="2500"
+                  placeholder="例：星鉄、魔力結晶、銀、革など"
+                ></textarea>
+              </div>
+
+              <div class="field">
+                <label
+                  class="field__label"
+                  for="size"
+                >
+                  大きさ・重量
+                </label>
+
+                <textarea
+                  id="size"
+                  name="size"
+                  rows="5"
+                  maxlength="2500"
+                  placeholder="全長、重量、携帯時のサイズなど"
+                ></textarea>
+              </div>
+
+              <div class="field form-grid__wide">
+                <label
+                  class="field__label"
+                  for="structure"
+                >
+                  構造・仕組み
+                </label>
+
+                <textarea
+                  id="structure"
+                  name="structure"
+                  rows="7"
+                  maxlength="5000"
+                  placeholder="内部構造、変形機構、作動方法、エネルギー源などを入力してください。"
+                ></textarea>
+              </div>
+            </div>
+          </section>
+
+          <!-- ==============================================
+               Ability / Performance
+          =============================================== -->
+          <section class="form-section card">
+            <div class="form-section__header">
+              <div>
+                <p class="eyebrow">
+                  ABILITY &amp; PERFORMANCE
+                </p>
+
+                <h2>
+                  性能・能力
+                </h2>
+              </div>
+
+              <span class="badge">
+                SPEC
+              </span>
+            </div>
+
+            <div class="form-grid">
+              <div class="field form-grid__wide">
+                <div class="field__label field__label--action">
+                  <label for="ability">
+                    主な能力・効果
+                  </label>
+
+                  <button
+                    class="mini-button"
+                    type="button"
+                    data-copy-target="ability"
+                  >
+                    コピー
+                  </button>
+                </div>
+
+                <textarea
+                  id="ability"
+                  name="ability"
+                  rows="10"
+                  maxlength="7000"
+                  placeholder="このアイテムが持つ能力、特殊効果、機能などを詳しく入力してください。"
+                ></textarea>
+              </div>
+
+              <div class="field">
+                <label
+                  class="field__label"
+                  for="activation"
+                >
+                  発動条件・使用方法
+                </label>
+
+                <textarea
+                  id="activation"
+                  name="activation"
+                  rows="7"
+                  maxlength="4000"
+                  placeholder="使用方法、発動に必要な条件、詠唱、鍵、資格など"
+                ></textarea>
+              </div>
+
+              <div class="field">
+                <label
+                  class="field__label"
+                  for="cost"
+                >
+                  使用コスト・消費
+                </label>
+
+                <textarea
+                  id="cost"
+                  name="cost"
+                  rows="7"
+                  maxlength="4000"
+                  placeholder="魔力、体力、寿命、燃料、回数制限など"
+                ></textarea>
+              </div>
+
+              <div class="field">
+                <label
+                  class="field__label"
+                  for="strengths"
+                >
+                  長所
+                </label>
+
+                <textarea
+                  id="strengths"
+                  name="strengths"
+                  rows="6"
+                  maxlength="3500"
+                  placeholder="強み、優れている点、他の道具との差など"
+                ></textarea>
+              </div>
+
+              <div class="field">
+                <label
+                  class="field__label"
+                  for="weaknesses"
+                >
+                  弱点・制約
+                </label>
+
+                <textarea
+                  id="weaknesses"
+                  name="weaknesses"
+                  rows="6"
+                  maxlength="3500"
+                  placeholder="欠点、使用上の制限、故障条件、反動など"
+                ></textarea>
+              </div>
+            </div>
+          </section>
+
+          <!-- ==============================================
+               History / Origin
+          =============================================== -->
+          <section class="form-section card">
+            <div class="form-section__header">
+              <div>
+                <p class="eyebrow">
+                  HISTORY &amp; ORIGIN
+                </p>
+
+                <h2>
+                  来歴・入手方法
+                </h2>
+              </div>
+            </div>
+
+            <div class="form-grid">
+              <div class="field form-grid__wide">
+                <div class="field__label field__label--action">
+                  <label for="origin">
+                    制作経緯・由来
+                  </label>
+
+                  <button
+                    class="mini-button"
+                    type="button"
+                    data-copy-target="origin"
+                  >
+                    コピー
+                  </button>
+                </div>
+
+                <textarea
+                  id="origin"
+                  name="origin"
+                  rows="8"
+                  maxlength="6000"
+                  placeholder="誰が、いつ、何の目的で作ったのか。名称の由来や誕生の経緯を入力してください。"
+                ></textarea>
+              </div>
+
+              <div class="field form-grid__wide">
+                <label
+                  class="field__label"
+                  for="history"
+                >
+                  来歴・過去
+                </label>
+
+                <textarea
+                  id="history"
+                  name="history"
+                  rows="8"
+                  maxlength="6000"
+                  placeholder="これまでの所有者、関わった事件、失われた期間などを入力してください。"
+                ></textarea>
+              </div>
+
+              <div class="field">
+                <label
+                  class="field__label"
+                  for="acquisition"
+                >
+                  入手方法
+                </label>
+
+                <textarea
+                  id="acquisition"
+                  name="acquisition"
+                  rows="6"
+                  maxlength="4000"
+                  placeholder="購入、継承、発見、製作、報酬など"
+                ></textarea>
+              </div>
+
+              <div class="field">
+                <label
+                  class="field__label"
+                  for="location"
+                >
+                  保管場所・所在
+                </label>
+
+                <textarea
+                  id="location"
+                  name="location"
+                  rows="6"
+                  maxlength="4000"
+                  placeholder="現在置かれている場所、保管方法、管理者など"
+                ></textarea>
+              </div>
+            </div>
+          </section>
+
+          <!-- ==============================================
+               Ownership
+          =============================================== -->
+          <section class="form-section card">
+            <div class="form-section__header">
+              <div>
+                <p class="eyebrow">
+                  OWNERSHIP
+                </p>
+
+                <h2>
+                  所有・使用者
+                </h2>
+              </div>
+            </div>
+
+            <div class="form-grid">
+              <div class="field">
+                <label
+                  class="field__label"
+                  for="owner"
+                >
+                  現在の所有者
+                </label>
+
+                <textarea
+                  id="owner"
+                  name="owner"
+                  rows="5"
+                  maxlength="3000"
+                  placeholder="現在このアイテムを所有している人物・組織"
+                ></textarea>
+              </div>
+
+              <div class="field">
+                <label
+                  class="field__label"
+                  for="previousOwners"
+                >
+                  過去の所有者
+                </label>
+
+                <textarea
+                  id="previousOwners"
+                  name="previousOwners"
+                  rows="5"
+                  maxlength="3000"
+                  placeholder="歴代の所有者や使用者"
+                ></textarea>
+              </div>
+
+              <div class="field form-grid__wide">
+                <label
+                  class="field__label"
+                  for="compatibility"
+                >
+                  適性・使用資格
+                </label>
+
+                <textarea
+                  id="compatibility"
+                  name="compatibility"
+                  rows="6"
+                  maxlength="4000"
+                  placeholder="誰でも使えるのか。血統、契約、能力、許可などの条件を入力してください。"
+                ></textarea>
+              </div>
+            </div>
+          </section>
+
+          <!-- ==============================================
+               Relations
+          =============================================== -->
+          <section class="form-section card">
+            <div class="form-section__header">
+              <div>
+                <p class="eyebrow">
+                  RELATIONS
+                </p>
+
+                <h2>
+                  関連設定
+                </h2>
+              </div>
+            </div>
+
+            <div class="form-grid">
+              <div class="field">
+                <label
+                  class="field__label"
+                  for="relatedCharacters"
+                >
+                  関連キャラクター
+                </label>
+
+                <textarea
+                  id="relatedCharacters"
+                  name="relatedCharacters"
+                  rows="5"
+                  maxlength="3000"
+                  placeholder="所有者、製作者、使用者、関係者など"
+                ></textarea>
+              </div>
+
+              <div class="field">
+                <label
+                  class="field__label"
+                  for="relatedOrganizations"
+                >
+                  関連組織
+                </label>
+
+                <textarea
+                  id="relatedOrganizations"
+                  name="relatedOrganizations"
+                  rows="5"
+                  maxlength="3000"
+                  placeholder="製造組織、管理組織、敵対組織など"
+                ></textarea>
+              </div>
+
+              <div class="field">
+                <label
+                  class="field__label"
+                  for="relatedWorlds"
+                >
+                  関連世界観・地域
+                </label>
+
+                <textarea
+                  id="relatedWorlds"
+                  name="relatedWorlds"
+                  rows="5"
+                  maxlength="3000"
+                  placeholder="関連する世界、国、地域、時代など"
+                ></textarea>
+              </div>
+
+              <div class="field">
+                <label
+                  class="field__label"
+                  for="relatedItems"
+                >
+                  関連アイテム
+                </label>
+
+                <textarea
+                  id="relatedItems"
+                  name="relatedItems"
+                  rows="5"
+                  maxlength="3000"
+                  placeholder="対になる道具、同シリーズ、部品、強化素材など"
+                ></textarea>
+              </div>
+
+              <div class="field form-grid__wide">
+                <label
+                  class="field__label"
+                  for="relatedTerms"
+                >
+                  関連用語
+                </label>
+
+                <textarea
+                  id="relatedTerms"
+                  name="relatedTerms"
+                  rows="5"
+                  maxlength="3000"
+                  placeholder="関連する能力名、制度、技術、伝承など"
+                ></textarea>
+              </div>
+            </div>
+          </section>
+
+          <!-- ==============================================
+               Usage in Story
+          =============================================== -->
+          <section class="form-section card">
+            <div class="form-section__header">
+              <div>
+                <p class="eyebrow">
+                  STORY ROLE
+                </p>
+
+                <h2>
+                  物語での役割
+                </h2>
+              </div>
+            </div>
+
+            <div class="form-grid">
+              <div class="field form-grid__wide">
+                <label
+                  class="field__label"
+                  for="storyRole"
+                >
+                  物語上の役割
+                </label>
+
+                <textarea
+                  id="storyRole"
+                  name="storyRole"
+                  rows="8"
+                  maxlength="6000"
+                  placeholder="物語の中で果たす役割、事件との関係、象徴的な意味などを入力してください。"
+                ></textarea>
+              </div>
+
+              <div class="field form-grid__wide">
+                <label
+                  class="field__label"
+                  for="scenes"
+                >
+                  登場シーン・使用例
+                </label>
+
+                <textarea
+                  id="scenes"
+                  name="scenes"
+                  rows="8"
+                  maxlength="6000"
+                  placeholder="使用される場面、印象的なシーン、演出案などを入力してください。"
+                ></textarea>
+              </div>
+            </div>
+          </section>
+
+          <!-- ==============================================
+               AI Prompt
+          =============================================== -->
+          <section
+            class="form-section card"
+            id="promptSection"
+          >
+            <div class="form-section__header">
+              <div>
+                <p class="eyebrow">
+                  AI PROMPT
+                </p>
+
+                <h2>
+                  AI用プロンプト・資料文
+                </h2>
+              </div>
+
+              <span class="badge">
+                PROMPT
+              </span>
+            </div>
+
+            <div class="form-grid">
+              <div class="field form-grid__wide">
+                <div class="field__label field__label--action">
+                  <label for="promptJa">
+                    日本語プロンプト
+                  </label>
+
+                  <button
+                    class="mini-button"
+                    type="button"
+                    data-copy-target="promptJa"
+                  >
+                    コピー
+                  </button>
+                </div>
+
+                <textarea
+                  id="promptJa"
+                  name="promptJa"
+                  rows="9"
+                  maxlength="12000"
+                  placeholder="アイテムの画像生成・文章生成用の日本語プロンプトを入力してください。"
+                ></textarea>
+              </div>
+
+              <div class="field form-grid__wide">
+                <div class="field__label field__label--action">
+                  <label for="promptEn">
+                    英語プロンプト
+                  </label>
+
+                  <button
+                    class="mini-button"
+                    type="button"
+                    data-copy-target="promptEn"
+                  >
+                    コピー
+                  </button>
+                </div>
+
+                <textarea
+                  id="promptEn"
+                  name="promptEn"
+                  rows="9"
+                  maxlength="12000"
+                  placeholder="English prompt"
+                ></textarea>
+              </div>
+
+              <div class="field form-grid__wide">
+                <div class="field__label field__label--action">
+                  <label for="negativePrompt">
+                    ネガティブプロンプト
+                  </label>
+
+                  <button
+                    class="mini-button"
+                    type="button"
+                    data-copy-target="negativePrompt"
+                  >
+                    コピー
+                  </button>
+                </div>
+
+                <textarea
+                  id="negativePrompt"
+                  name="negativePrompt"
+                  rows="6"
+                  maxlength="8000"
+                  placeholder="除外したい要素を入力してください。"
+                ></textarea>
+              </div>
+            </div>
+          </section>
+
+          <!-- ==============================================
+               Notes
+          =============================================== -->
+          <section class="form-section card">
+            <div class="form-section__header">
+              <div>
+                <p class="eyebrow">
+                  NOTES
+                </p>
+
+                <h2>
+                  補足メモ
+                </h2>
+              </div>
+            </div>
+
+            <div class="form-grid">
+              <div class="field form-grid__wide">
+                <textarea
+                  id="notes"
+                  name="notes"
+                  rows="8"
+                  maxlength="6000"
+                  placeholder="公開しないメモ、未確定事項、今後詰めたい点などを入力してください。"
+                ></textarea>
+              </div>
+            </div>
+          </section>
+
+          <!-- ==============================================
+               Save & Management
+          =============================================== -->
+          <section class="form-section card">
+            <div class="form-section__header">
+              <div>
+                <p class="eyebrow">
+                  SAVE &amp; MANAGEMENT
+                </p>
+
+                <h2>
+                  保存・管理
+                </h2>
+              </div>
+            </div>
+
+            <div class="editor-footer-actions">
+              <button
+                class="button button--primary button--large js-save-item"
+                type="submit"
+              >
+                保存する
+              </button>
+
+              <button
+                class="button button--secondary js-duplicate-item"
+                type="button"
+              >
+                複製する
+              </button>
+
+              <button
+                class="button button--danger"
+                id="deleteButton"
+                type="button"
+              >
+                削除する
+              </button>
+            </div>
+
+            <p class="field__note">
+              最終更新：
+              <span id="updatedAt">
+                未保存
+              </span>
+            </p>
+          </section>
+        </form>
+      </div>
+    </main>
+  </div>
+
+  <!-- ==================================================
+       Toast
+  =================================================== -->
+  <div
+    class="toast"
+    id="toast"
+    hidden
+  >
+    <p id="toastMessage"></p>
+  </div>
+
+  <!-- ==================================================
+       Delete Dialog
+  =================================================== -->
+  <dialog
+    class="dialog"
+    id="deleteDialog"
+  >
+    <div class="dialog__inner">
+      <div class="dialog__header">
+        <div>
+          <p class="eyebrow">
+            DELETE ITEM
+          </p>
+
+          <h2>
+            このアイテムを削除しますか？
+          </h2>
+        </div>
+
+        <button
+          class="dialog__close"
+          id="deleteDialogClose"
+          type="button"
+          aria-label="閉じる"
+        >
+          ×
+        </button>
+      </div>
+
+      <div class="dialog__body">
+        <p>
+          <strong id="deleteTargetName">
+            このアイテム
+          </strong>
+          を削除します。元に戻せません。
+        </p>
+      </div>
+
+      <div class="dialog__actions">
+        <button
+          class="button button--sub"
+          id="deleteCancelButton"
+          type="button"
+        >
+          キャンセル
+        </button>
+
+        <button
+          class="button button--danger"
+          id="deleteConfirmButton"
+          type="button"
+        >
+          削除する
+        </button>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- ==================================================
+       Unsaved Dialog
+  =================================================== -->
+  <dialog
+    class="dialog"
+    id="unsavedDialog"
+  >
+    <div class="dialog__inner">
+      <div class="dialog__header">
+        <div>
+          <p class="eyebrow">
+            UNSAVED CHANGES
+          </p>
+
+          <h2>
+            保存されていない変更があります
+          </h2>
+        </div>
+
+        <button
+          class="dialog__close"
+          id="unsavedDialogClose"
+          type="button"
+          aria-label="閉じる"
+        >
+          ×
+        </button>
+      </div>
+
+      <div class="dialog__body">
+        <p>
+          このページを離れると、入力した内容が失われます。
+        </p>
+      </div>
+
+      <div class="dialog__actions">
+        <button
+          class="button button--sub"
+          id="unsavedStayButton"
+          type="button"
+        >
+          編集を続ける
+        </button>
+
+        <button
+          class="button button--danger"
+          id="unsavedLeaveButton"
+          type="button"
+        >
+          保存せず移動
+        </button>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- ==================================================
+       JavaScript
+  =================================================== -->
+  <script src="js/storage.js"></script>
+  <script src="js/common.js"></script>
+  <script src="js/item.js"></script>
+</body>
+</html>

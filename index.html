@@ -1,225 +1,234 @@
 <!DOCTYPE html>
 <html lang="ja">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="キャラクター・世界観などの創作資料をブラウザ内で管理するローカルWebアプリです。">
+  <title>Creative Archive | 創作資料管理</title>
 
-    <meta name="description" content="オリジナルキャラクターの設定やイメージ画像を管理するツール">
+  <link rel="stylesheet" href="css/reset.css">
+  <link rel="stylesheet" href="css/common.css">
+  <link rel="stylesheet" href="css/index.css">
 
-    <title>Character Archive</title>
-
-    <!-- CSS -->
-    <link rel="stylesheet" href="css/reset.css">
-    <link rel="stylesheet" href="css/common.css">
-    <link rel="stylesheet" href="css/index.css">
-
-    <!-- JavaScript -->
-    <script src="js/storage.js" defer></script>
-    <script src="js/common.js" defer></script>
-    <script src="js/index.js" defer></script>
+<script src="js/storage.js" defer></script>
+<script src="js/common.js" defer></script>
+<script src="js/character-list.js" defer></script>
+<script src="js/world-list.js" defer></script>
+<script src="js/organization-list.js" defer></script>
+<script src="js/glossary-list.js" defer></script>
+<script src="js/item-list.js" defer></script>
+<script src="js/dashboard.js" defer></script>
+<script src="js/index.js" defer></script>
 </head>
 
 <body>
+  <div class="app">
+    <aside class="sidebar" id="sidebar" aria-label="メインメニュー">
+      <div class="sidebar__header">
+        <a class="brand" href="index.html" aria-label="ダッシュボードへ移動">
+          <span class="brand__mark" aria-hidden="true">✦</span>
+          <span class="brand__text">
+            <strong>Creative Archive</strong>
+            <small>創作資料管理</small>
+          </span>
+        </a>
 
-    <div class="app">
+        <button class="icon-button sidebar__close" id="sidebarClose" type="button" aria-label="メニューを閉じる">×</button>
+      </div>
 
-        <!-- サイドメニュー -->
-        <aside class="sidebar" id="sidebar">
+      <nav class="sidebar__nav">
+        <button class="sidebar__link sidebar__button is-active" type="button" data-view="dashboard">
+          <span class="sidebar__icon" aria-hidden="true">⌂</span>
+          <span>ダッシュボード</span>
+        </button>
 
-            <div class="sidebar__header">
+        <button class="sidebar__link sidebar__button" type="button" data-view="character">
+          <span class="sidebar__icon" aria-hidden="true">♙</span>
+          <span>キャラクター</span>
+          <span class="sidebar__count" id="sidebarCharacterCount">0</span>
+        </button>
 
-                <a class="brand" href="index.html">
+        <button class="sidebar__link sidebar__button" type="button" data-view="world">
+          <span class="sidebar__icon" aria-hidden="true">◎</span>
+          <span>世界観</span>
+          <span class="sidebar__count" id="sidebarWorldCount">0</span>
+        </button>
 
-                    <span class="brand__mark">
-                        ✦
-                    </span>
+        <span class="sidebar__section-label">COMING SOON</span>
 
-                    <span class="brand__text">
-                        <strong>Character Archive</strong>
-                        <small>Original Character Manager</small>
-                    </span>
+        <button class="sidebar__link sidebar__button" type="button" disabled>
+          <span class="sidebar__icon" aria-hidden="true">▦</span>
+          <span>組織・施設</span>
+        </button>
 
-                </a>
+        <button class="sidebar__link sidebar__button" type="button" disabled>
+          <span class="sidebar__icon" aria-hidden="true">Aa</span>
+          <span>用語集</span>
+        </button>
 
-                <button class="icon-button sidebar__close" id="sidebarClose" type="button" aria-label="メニューを閉じる">
-                    ×
-                </button>
+        <button class="sidebar__link sidebar__button" type="button" disabled>
+          <span class="sidebar__icon" aria-hidden="true">◇</span>
+          <span>アイテム</span>
+        </button>
 
+        <div class="sidebar__separator"></div>
+
+        <button class="sidebar__link sidebar__button" id="backupButton" type="button">
+          <span class="sidebar__icon" aria-hidden="true">⇩</span>
+          <span>キャラクターをバックアップ</span>
+        </button>
+
+        <button class="sidebar__link sidebar__button" id="restoreButton" type="button">
+          <span class="sidebar__icon" aria-hidden="true">⇧</span>
+          <span>キャラクターを復元</span>
+        </button>
+
+        <input id="restoreInput" type="file" accept=".json,application/json" hidden>
+      </nav>
+
+      <div class="sidebar__note">
+        <p>データは、このブラウザ内に保存されます。</p>
+        <p>画像を多く登録する場合は、定期的にバックアップしてください。</p>
+      </div>
+    </aside>
+
+    <button class="sidebar-overlay" id="sidebarOverlay" type="button" aria-label="メニューを閉じる"></button>
+
+    <main class="main">
+      <header class="topbar">
+        <button class="icon-button topbar__menu" id="sidebarOpen" type="button" aria-label="メニューを開く">☰</button>
+
+        <div class="topbar__heading">
+          <p class="eyebrow" id="pageEyebrow">CREATIVE DASHBOARD</p>
+          <h1 id="pageTitle">創作資料ダッシュボード</h1>
+          <p class="topbar__description" id="pageDescription">キャラクターと世界観をまとめて管理できます。</p>
+        </div>
+
+        <div class="topbar__actions" id="topbarActions">
+          <a class="button button--secondary" href="world.html">＋ 世界観</a>
+          <a class="button button--primary" href="character.html">＋ キャラクター</a>
+        </div>
+      </header>
+
+      <section class="view-panel" id="dashboardView" data-view-panel="dashboard">
+        <div class="stats-grid" aria-label="登録資料数">
+          <button class="stat-card" type="button" data-view="character">
+            <span class="stat-card__icon" aria-hidden="true">♙</span>
+            <span class="stat-card__content">
+              <span class="stat-card__label">キャラクター</span>
+              <strong id="dashboardCharacterCount">0</strong>
+              <small>characters</small>
+            </span>
+            <span class="stat-card__arrow" aria-hidden="true">→</span>
+          </button>
+
+          <button class="stat-card" type="button" data-view="world">
+            <span class="stat-card__icon" aria-hidden="true">◎</span>
+            <span class="stat-card__content">
+              <span class="stat-card__label">世界観</span>
+              <strong id="dashboardWorldCount">0</strong>
+              <small>worlds</small>
+            </span>
+            <span class="stat-card__arrow" aria-hidden="true">→</span>
+          </button>
+
+          <article class="stat-card stat-card--disabled">
+            <span class="stat-card__icon" aria-hidden="true">▦</span>
+            <span class="stat-card__content">
+              <span class="stat-card__label">組織・施設</span>
+              <strong>0</strong>
+              <small>coming soon</small>
+            </span>
+          </article>
+
+          <article class="stat-card stat-card--disabled">
+            <span class="stat-card__icon" aria-hidden="true">Aa</span>
+            <span class="stat-card__content">
+              <span class="stat-card__label">用語・アイテム</span>
+              <strong>0</strong>
+              <small>coming soon</small>
+            </span>
+          </article>
+        </div>
+
+        <section class="dashboard-section">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">RECENTLY UPDATED</p>
+              <h2>最近更新した資料</h2>
             </div>
+          </div>
 
-            <nav class="sidebar__nav" aria-label="メインメニュー">
+          <div class="recent-grid" id="recentGrid"></div>
 
-                <a class="sidebar__link is-active" href="index.html">
-                    <span class="sidebar__icon">♙</span>
-                    キャラクター
-                </a>
+          <div class="empty-state empty-state--compact" id="recentEmptyState" hidden>
+            <div class="empty-state__icon" aria-hidden="true">✦</div>
+            <h2>まだ資料が登録されていません</h2>
+            <p>キャラクターか世界観を作成すると、ここに最近の資料が表示されます。</p>
+          </div>
+        </section>
+      </section>
 
-                <button class="sidebar__link sidebar__button" id="backupButton" type="button">
-                    <span class="sidebar__icon">⇩</span>
-                    バックアップ
-                </button>
+      <section class="view-panel" id="listView" data-view-panel="list" hidden>
+        <div class="content-tabs" role="tablist" aria-label="資料の種類">
+          <button class="content-tab is-active" type="button" role="tab" aria-selected="true" data-view="character">
+            キャラクター
+            <span id="characterTabCount">0</span>
+          </button>
 
-                <button class="sidebar__link sidebar__button" id="restoreButton" type="button">
-                    <span class="sidebar__icon">⇧</span>
-                    復元
-                </button>
+          <button class="content-tab" type="button" role="tab" aria-selected="false" data-view="world">
+            世界観
+            <span id="worldTabCount">0</span>
+          </button>
+        </div>
 
-                <input id="restoreInput" type="file" accept=".json,application/json" hidden>
+        <section class="toolbar" aria-label="検索と絞り込み">
+          <label class="search-box">
+            <span class="search-box__icon" aria-hidden="true">⌕</span>
+            <input id="searchInput" type="search" placeholder="名前・作品・タグ・設定から検索" autocomplete="off">
+          </label>
 
-            </nav>
+          <label class="select-box" id="workFilterWrap">
+            <span class="select-box__label">作品</span>
+            <select id="workFilter">
+              <option value="">すべての作品</option>
+            </select>
+          </label>
 
-            <div class="sidebar__note">
-                <p>
-                    データは、このブラウザ内に保存されます。
-                </p>
+          <label class="select-box">
+            <span class="select-box__label">並び順</span>
+            <select id="sortSelect">
+              <option value="updated-desc">更新が新しい順</option>
+              <option value="updated-asc">更新が古い順</option>
+              <option value="name-asc">名前順</option>
+              <option value="name-desc">名前の逆順</option>
+              <option value="created-desc">作成が新しい順</option>
+              <option value="created-asc">作成が古い順</option>
+            </select>
+          </label>
+        </section>
 
-                <p>
-                    定期的にバックアップしてください。
-                </p>
-            </div>
+        <section class="summary-bar">
+          <p class="summary-bar__count">
+            <strong id="resultCount">0</strong>
+            <span id="resultUnit">characters</span>
+          </p>
 
-        </aside>
+          <div class="tag-filter" id="tagFilter" aria-label="タグ絞り込み"></div>
+        </section>
 
-        <!-- スマホ用メニュー背景 -->
-        <div class="sidebar-overlay" id="sidebarOverlay"></div>
+        <section class="archive-grid" id="archiveGrid" aria-live="polite"></section>
 
-        <!-- メインコンテンツ -->
-        <main class="main">
+        <section class="empty-state" id="emptyState" hidden>
+          <div class="empty-state__icon" aria-hidden="true">✦</div>
+          <h2 id="emptyTitle">まだキャラクターが登録されていません</h2>
+          <p id="emptyDescription">最初のキャラクター設定を作成してみましょう。</p>
+          <a class="button button--primary" id="emptyCreateLink" href="character.html">＋ キャラクターを作成</a>
+        </section>
+      </section>
+    </main>
+  </div>
 
-            <!-- ページ上部 -->
-            <header class="topbar">
-
-                <button class="icon-button topbar__menu" id="sidebarOpen" type="button" aria-label="メニューを開く">
-                    ☰
-                </button>
-
-                <div class="topbar__heading">
-
-                    <p class="eyebrow">
-                        CHARACTER COLLECTION
-                    </p>
-
-                    <h1>
-                        キャラクター一覧
-                    </h1>
-
-                </div>
-
-                <a class="button button--primary topbar__create" href="character.html">
-                    <span>＋</span>
-                    新規作成
-                </a>
-
-            </header>
-
-            <!-- 検索・絞り込み -->
-            <section class="toolbar" aria-label="検索と絞り込み">
-
-                <label class="search-box">
-
-                    <span class="search-box__icon">
-                        ⌕
-                    </span>
-
-                    <input id="searchInput" type="search" placeholder="名前・作品・タグ・設定から検索" autocomplete="off">
-
-                </label>
-
-                <label class="select-box">
-
-                    <span class="select-box__label">
-                        作品
-                    </span>
-
-                    <select id="workFilter">
-
-                        <option value="">
-                            すべて
-                        </option>
-
-                    </select>
-
-                </label>
-
-                <label class="select-box">
-
-                    <span class="select-box__label">
-                        並び順
-                    </span>
-
-                    <select id="sortSelect">
-
-                        <option value="updated-desc">
-                            更新が新しい順
-                        </option>
-
-                        <option value="updated-asc">
-                            更新が古い順
-                        </option>
-
-                        <option value="name-asc">
-                            名前順
-                        </option>
-
-                        <option value="created-desc">
-                            作成が新しい順
-                        </option>
-
-                    </select>
-
-                </label>
-
-            </section>
-
-            <!-- 件数・タグ絞り込み -->
-            <section class="summary-bar">
-
-                <p class="summary-bar__count">
-                    <strong id="characterCount">
-                        0
-                    </strong>
-
-                    <span>
-                        characters
-                    </span>
-                </p>
-
-                <div class="tag-filter" id="tagFilter" aria-label="タグ絞り込み"></div>
-
-            </section>
-
-            <!-- キャラクターカード表示場所 -->
-            <section class="character-grid" id="characterGrid" aria-live="polite"></section>
-
-            <!-- キャラクター未登録時 -->
-            <section class="empty-state" id="emptyState" hidden>
-
-                <div class="empty-state__icon">
-                    ✦
-                </div>
-
-                <h2>
-                    まだキャラクターが登録されていません
-                </h2>
-
-                <p>
-                    最初のキャラクター設定を作成してみましょう。
-                </p>
-
-                <a class="button button--primary" href="character.html">
-                    ＋ キャラクターを作成
-                </a>
-
-            </section>
-
-        </main>
-
-    </div>
-
-    <!-- 通知メッセージ -->
-    <div class="toast" id="toast" role="status" aria-live="polite"></div>
-
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
 </body>
-
 </html>

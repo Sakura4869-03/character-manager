@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="創作用語を登録・編集・管理するためのローカルWebアプリです。">
+  <title>用語編集 | Creative Archive</title>
+
+  <link rel="stylesheet" href="css/reset.css">
+  <link rel="stylesheet" href="css/common.css">
+  <link rel="stylesheet" href="css/character.css">
+</head>
+
+<body>
+  <div class="app">
+    <aside class="sidebar" id="sidebar" aria-label="メインメニュー">
+      <div class="sidebar__header">
+        <a class="brand" href="index.html?view=glossary" aria-label="用語集へ戻る">
+          <span class="brand__mark" aria-hidden="true">✦</span>
+          <span class="brand__text">
+            <strong>Creative Archive</strong>
+            <small>創作資料管理</small>
+          </span>
+        </a>
+
+        <button class="icon-button sidebar__close" id="sidebarClose" type="button" aria-label="メニューを閉じる">×</button>
+      </div>
+
+      <nav class="sidebar__nav">
+        <a class="sidebar__link" href="index.html?view=glossary">
+          <span class="sidebar__icon" aria-hidden="true">Aa</span>
+          <span>用語集</span>
+        </a>
+
+        <button class="sidebar__link sidebar__button is-active" type="button" data-new-glossary>
+          <span class="sidebar__icon" aria-hidden="true">＋</span>
+          <span>新規用語</span>
+        </button>
+
+        <button class="sidebar__link sidebar__button js-duplicate-glossary" type="button">
+          <span class="sidebar__icon" aria-hidden="true">⧉</span>
+          <span>この用語を複製</span>
+        </button>
+
+        <button class="sidebar__link sidebar__button" id="exportGlossaryButton" type="button">
+          <span class="sidebar__icon" aria-hidden="true">⇩</span>
+          <span>JSONを書き出す</span>
+        </button>
+
+        <button class="sidebar__link sidebar__button" id="printButton" type="button">
+          <span class="sidebar__icon" aria-hidden="true">▣</span>
+          <span>設定資料を印刷</span>
+        </button>
+      </nav>
+
+      <div class="sidebar__note">
+        <p>入力内容は、このブラウザ内に保存されます。</p>
+      </div>
+    </aside>
+
+    <button class="sidebar-overlay" id="sidebarOverlay" type="button" aria-label="メニューを閉じる"></button>
+
+    <main class="main character-main">
+      <header class="editor-header">
+        <div class="editor-header__left">
+          <button class="icon-button topbar__menu" id="sidebarOpen" type="button" aria-label="メニューを開く">☰</button>
+
+          <div>
+            <p class="eyebrow">GLOSSARY EDITOR</p>
+            <h1 id="pageTitle">新規用語</h1>
+            <p class="editor-header__status" id="saveStatus" aria-live="polite">未保存</p>
+          </div>
+        </div>
+
+        <div class="editor-header__actions">
+          <a class="button button--secondary" href="index.html?view=glossary">一覧へ戻る</a>
+          <button class="button button--primary button--large js-save-glossary" type="submit" form="glossaryForm">保存する</button>
+        </div>
+      </header>
+
+      <div class="editor-layout">
+        <aside class="preview-panel">
+          <div class="preview-card card">
+            <div class="preview-card__image">
+              <div class="preview-card__placeholder" aria-hidden="true">
+                <span class="preview-card__placeholder-icon" id="previewInitial">Aa</span>
+                <span>用語</span>
+              </div>
+
+              <span class="preview-card__color" id="themeColorPreview" aria-hidden="true"></span>
+            </div>
+
+            <div class="preview-card__body">
+              <p class="preview-card__work" id="workPreview">作品未設定</p>
+              <h2 id="namePreview">用語名未設定</h2>
+              <p class="preview-card__title" id="categoryPreview">分類未設定</p>
+              <p class="preview-card__summary" id="summaryPreview">用語の概要を入力すると、ここに表示されます。</p>
+              <div class="preview-card__tags" id="tagPreview"></div>
+            </div>
+          </div>
+
+          <div class="preview-actions">
+            <button class="button button--secondary w-full" id="scrollToPromptButton" type="button">プロンプト欄へ移動</button>
+          </div>
+        </aside>
+
+        <form class="character-form" id="glossaryForm" novalidate>
+          <input id="glossaryId" name="id" type="hidden">
+
+          <section class="form-section card">
+            <div class="form-section__header">
+              <div>
+                <p class="eyebrow">BASIC INFORMATION</p>
+                <h2>基本情報</h2>
+              </div>
+              <span class="badge badge--gold">必須項目あり</span>
+            </div>
+
+            <div class="form-grid">
+              <div class="field form-grid__wide">
+                <label class="field__label" for="term">
+                  <span>用語名</span>
+                  <em>必須</em>
+                </label>
+                <input id="term" name="term" type="text" maxlength="120" autocomplete="off" placeholder="例：天球儀ホール" required>
+                <p class="field__error" id="termError" hidden>用語名を入力してください。</p>
+              </div>
+
+              <div class="field">
+                <label class="field__label" for="reading">読み方</label>
+                <input id="reading" name="reading" type="text" maxlength="120" autocomplete="off" placeholder="例：てんきゅうぎホール">
+              </div>
+
+              <div class="field">
+                <label class="field__label" for="category">分類</label>
+                <input id="category" name="category" type="text" maxlength="100" autocomplete="off" placeholder="例：施設・制度・能力">
+              </div>
+
+              <div class="field form-grid__wide">
+                <label class="field__label" for="series">作品・シリーズ名</label>
+                <input id="series" name="series" type="text" maxlength="150" autocomplete="off" placeholder="例：天星学園 キャラクター設定資料集">
+              </div>
+
+              <div class="field form-grid__wide">
+                <label class="field__label" for="tags">タグ</label>
+                <input id="tags" name="tags" type="text" maxlength="300" autocomplete="off" placeholder="例：学園施設, 星, 儀式">
+                <p class="field__note">カンマ、読点、改行で区切って入力してください。</p>
+              </div>
+
+              <div class="field form-grid__wide">
+                <label class="field__label" for="summary">短い概要</label>
+                <textarea id="summary" name="summary" rows="5" maxlength="1200" placeholder="一覧カードにも表示する短い説明を入力してください。"></textarea>
+              </div>
+
+              <div class="field">
+                <label class="field__label" for="themeColor">テーマカラー</label>
+                <div class="color-field">
+                  <input id="themeColorPicker" type="color" value="#d08a45" aria-label="テーマカラーを選択">
+                  <input id="themeColor" name="themeColor" type="text" maxlength="7" value="#D08A45" pattern="^#[0-9A-Fa-f]{6}$" placeholder="#D08A45">
+                </div>
+                <p class="field__error" id="themeColorError" hidden>6桁のHEXカラーコードを入力してください。</p>
+              </div>
+            </div>
+          </section>
+
+          <section class="form-section card">
+            <div class="form-section__header">
+              <div>
+                <p class="eyebrow">GLOSSARY DETAILS</p>
+                <h2>用語詳細</h2>
+              </div>
+              <span class="badge">設定資料</span>
+            </div>
+
+            <div class="form-grid">
+              <div class="field form-grid__wide">
+                <div class="field__label field__label--action">
+                  <label for="definition">定義・意味</label>
+                  <button class="mini-button" type="button" data-copy-target="definition">コピー</button>
+                </div>
+                <textarea id="definition" name="definition" rows="10" maxlength="6000" placeholder="この用語が何を意味するのか、作品内での役割や仕組みを詳しく入力してください。"></textarea>
+              </div>
+
+              <div class="field form-grid__wide">
+                <div class="field__label field__label--action">
+                  <label for="origin">由来・語源</label>
+                  <button class="mini-button" type="button" data-copy-target="origin">コピー</button>
+                </div>
+                <textarea id="origin" name="origin" rows="7" maxlength="4000" placeholder="名称の由来、成立した背景、語源などを入力してください。"></textarea>
+              </div>
+
+              <div class="field form-grid__wide">
+                <div class="field__label field__label--action">
+                  <label for="usage">使われ方・用例</label>
+                  <button class="mini-button" type="button" data-copy-target="usage">コピー</button>
+                </div>
+                <textarea id="usage" name="usage" rows="7" maxlength="4000" placeholder="誰が、どのような場面で使う言葉か。会話例や使用上の注意などを入力してください。"></textarea>
+              </div>
+            </div>
+          </section>
+
+          <section class="form-section card">
+            <div class="form-section__header">
+              <div>
+                <p class="eyebrow">RELATIONS</p>
+                <h2>関連設定</h2>
+              </div>
+            </div>
+
+            <div class="form-grid">
+              <div class="field">
+                <label class="field__label" for="relatedTerms">関連用語</label>
+                <textarea id="relatedTerms" name="relatedTerms" rows="5" maxlength="2500" placeholder="関連する用語名を入力してください。"></textarea>
+              </div>
+
+              <div class="field">
+                <label class="field__label" for="relatedCharacters">関連キャラクター</label>
+                <textarea id="relatedCharacters" name="relatedCharacters" rows="5" maxlength="2500" placeholder="この用語に関わるキャラクターを入力してください。"></textarea>
+              </div>
+
+              <div class="field">
+                <label class="field__label" for="relatedOrganizations">関連組織・施設</label>
+                <textarea id="relatedOrganizations" name="relatedOrganizations" rows="5" maxlength="2500" placeholder="関連する組織・施設を入力してください。"></textarea>
+              </div>
+
+              <div class="field">
+                <label class="field__label" for="relatedWorlds">関連世界観</label>
+                <textarea id="relatedWorlds" name="relatedWorlds" rows="5" maxlength="2500" placeholder="関連する世界・地域・時代などを入力してください。"></textarea>
+              </div>
+            </div>
+          </section>
+
+          <section class="form-section card" id="promptSection">
+            <div class="form-section__header">
+              <div>
+                <p class="eyebrow">AI PROMPT</p>
+                <h2>AI用プロンプト・資料文</h2>
+              </div>
+              <span class="badge">PROMPT</span>
+            </div>
+
+            <div class="form-grid">
+              <div class="field form-grid__wide">
+                <div class="field__label field__label--action">
+                  <label for="promptJa">日本語プロンプト</label>
+                  <button class="mini-button" type="button" data-copy-target="promptJa">コピー</button>
+                </div>
+                <textarea id="promptJa" name="promptJa" rows="9" maxlength="12000" placeholder="用語に関する画像生成・文章生成用の日本語プロンプトを入力してください。"></textarea>
+              </div>
+
+              <div class="field form-grid__wide">
+                <div class="field__label field__label--action">
+                  <label for="promptEn">英語プロンプト</label>
+                  <button class="mini-button" type="button" data-copy-target="promptEn">コピー</button>
+                </div>
+                <textarea id="promptEn" name="promptEn" rows="9" maxlength="12000" placeholder="English prompt"></textarea>
+              </div>
+
+              <div class="field form-grid__wide">
+                <div class="field__label field__label--action">
+                  <label for="negativePrompt">ネガティブプロンプト</label>
+                  <button class="mini-button" type="button" data-copy-target="negativePrompt">コピー</button>
+                </div>
+                <textarea id="negativePrompt" name="negativePrompt" rows="6" maxlength="8000" placeholder="除外したい要素を入力してください。"></textarea>
+              </div>
+            </div>
+          </section>
+
+          <section class="form-section card">
+            <div class="form-section__header">
+              <div>
+                <p class="eyebrow">NOTES</p>
+                <h2>補足メモ</h2>
+              </div>
+            </div>
+
+            <div class="form-grid">
+              <div class="field form-grid__wide">
+                <textarea id="notes" name="notes" rows="8" maxlength="6000" placeholder="公開しないメモ、未確定事項、今後詰めたい点などを入力してください。"></textarea>
+              </div>
+            </div>
+          </section>
+
+          <section class="form-section card">
+            <div class="form-section__header">
+              <div>
+                <p class="eyebrow">SAVE &amp; MANAGEMENT</p>
+                <h2>保存・管理</h2>
+              </div>
+            </div>
+
+            <div class="editor-footer-actions">
+              <button class="button button--primary button--large js-save-glossary" type="submit">保存する</button>
+              <button class="button button--secondary js-duplicate-glossary" type="button">複製する</button>
+              <button class="button button--danger" id="deleteButton" type="button">削除する</button>
+            </div>
+
+            <p class="field__note">最終更新：<span id="updatedAt">未保存</span></p>
+          </section>
+        </form>
+      </div>
+    </main>
+  </div>
+
+  <div class="toast" id="toast" hidden>
+    <p id="toastMessage"></p>
+  </div>
+
+  <dialog class="dialog" id="deleteDialog">
+    <div class="dialog__inner">
+      <div class="dialog__header">
+        <div>
+          <p class="eyebrow">DELETE GLOSSARY</p>
+          <h2>この用語を削除しますか？</h2>
+        </div>
+        <button class="dialog__close" id="deleteDialogClose" type="button" aria-label="閉じる">×</button>
+      </div>
+
+      <div class="dialog__body">
+        <p><strong id="deleteTargetName">この用語</strong>を削除します。元に戻せません。</p>
+      </div>
+
+      <div class="dialog__actions">
+        <button class="button button--sub" id="deleteCancelButton" type="button">キャンセル</button>
+        <button class="button button--danger" id="deleteConfirmButton" type="button">削除する</button>
+      </div>
+    </div>
+  </dialog>
+
+  <dialog class="dialog" id="unsavedDialog">
+    <div class="dialog__inner">
+      <div class="dialog__header">
+        <div>
+          <p class="eyebrow">UNSAVED CHANGES</p>
+          <h2>保存されていない変更があります</h2>
+        </div>
+        <button class="dialog__close" id="unsavedDialogClose" type="button" aria-label="閉じる">×</button>
+      </div>
+
+      <div class="dialog__body">
+        <p>このページを離れると、入力中の変更が失われる可能性があります。</p>
+      </div>
+
+      <div class="dialog__actions">
+        <button class="button button--sub" id="unsavedStayButton" type="button">編集を続ける</button>
+        <button class="button button--danger" id="unsavedLeaveButton" type="button">保存せず移動</button>
+      </div>
+    </div>
+  </dialog>
+
+  <script src="js/storage.js"></script>
+  <script src="js/common.js"></script>
+  <script src="js/glossary.js"></script>
+</body>
+</html>

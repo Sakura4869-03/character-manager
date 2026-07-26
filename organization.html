@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="組織・施設設定を登録・編集・管理するためのローカルWebアプリです。">
+  <title>組織・施設編集 | Creative Archive</title>
+
+  <link rel="stylesheet" href="css/reset.css">
+  <link rel="stylesheet" href="css/common.css">
+  <link rel="stylesheet" href="css/character.css">
+</head>
+
+<body>
+  <div class="app">
+    <aside class="sidebar" id="sidebar" aria-label="メインメニュー">
+      <div class="sidebar__header">
+        <a class="brand" href="index.html?type=organization" aria-label="組織・施設一覧へ戻る">
+          <span class="brand__mark" aria-hidden="true">✦</span>
+          <span class="brand__text">
+            <strong>Creative Archive</strong>
+            <small>創作設定管理</small>
+          </span>
+        </a>
+
+        <button class="icon-button sidebar__close" id="sidebarClose" type="button" aria-label="メニューを閉じる">×</button>
+      </div>
+
+      <nav class="sidebar__nav">
+        <a class="sidebar__link" href="index.html?type=organization">
+          <span class="sidebar__icon" aria-hidden="true">◫</span>
+          <span>組織・施設一覧</span>
+        </a>
+
+        <button class="sidebar__link sidebar__button is-active" type="button" data-new-organization>
+          <span class="sidebar__icon" aria-hidden="true">＋</span>
+          <span>新規組織・施設</span>
+        </button>
+
+        <button class="sidebar__link sidebar__button js-duplicate-organization" type="button">
+          <span class="sidebar__icon" aria-hidden="true">⧉</span>
+          <span>この設定を複製</span>
+        </button>
+
+        <button class="sidebar__link sidebar__button" id="exportOrganizationButton" type="button">
+          <span class="sidebar__icon" aria-hidden="true">⇩</span>
+          <span>JSONを書き出す</span>
+        </button>
+
+        <button class="sidebar__link sidebar__button" id="printButton" type="button">
+          <span class="sidebar__icon" aria-hidden="true">▣</span>
+          <span>設定資料を印刷</span>
+        </button>
+      </nav>
+
+      <div class="sidebar__note">
+        <p>入力内容は、このブラウザ内に保存されます。</p>
+        <p>画像を多く登録すると、保存容量が不足する場合があります。</p>
+      </div>
+    </aside>
+
+    <button class="sidebar-overlay" id="sidebarOverlay" type="button" aria-label="メニューを閉じる"></button>
+
+    <main class="main character-main">
+      <header class="editor-header">
+        <div class="editor-header__left">
+          <button class="icon-button topbar__menu" id="sidebarOpen" type="button" aria-label="メニューを開く">☰</button>
+
+          <div>
+            <p class="eyebrow">ORGANIZATION EDITOR</p>
+            <h1 id="pageTitle">新規組織・施設</h1>
+            <p class="editor-header__status" id="saveStatus" aria-live="polite">未保存</p>
+          </div>
+        </div>
+
+        <div class="editor-header__actions">
+          <a class="button button--secondary" href="index.html?type=organization">一覧へ戻る</a>
+          <button class="button button--primary button--large js-save-organization" type="submit" form="organizationForm">保存する</button>
+        </div>
+      </header>
+
+      <div class="editor-layout">
+        <aside class="preview-panel">
+          <div class="preview-card card">
+            <div class="preview-card__image">
+              <img id="imagePreview" src="" alt="" hidden>
+
+              <div class="preview-card__placeholder" id="imagePlaceholder" aria-hidden="true">
+                <span class="preview-card__placeholder-icon" id="previewInitial">⌂</span>
+                <span>組織・施設画像</span>
+              </div>
+
+              <span class="preview-card__color" id="themeColorPreview" aria-hidden="true"></span>
+            </div>
+
+            <div class="preview-card__body">
+              <p class="preview-card__work" id="workPreview">作品未設定</p>
+              <h2 id="namePreview">組織名未設定</h2>
+              <p class="preview-card__title" id="typePreview">種類・分類</p>
+              <p class="preview-card__summary" id="summaryPreview">組織・施設の概要を入力すると、ここに表示されます。</p>
+              <div class="preview-card__tags" id="tagPreview"></div>
+            </div>
+          </div>
+
+          <div class="preview-actions">
+            <button class="button button--secondary w-full" id="scrollToPromptButton" type="button">プロンプト欄へ移動</button>
+          </div>
+        </aside>
+
+        <form class="character-form" id="organizationForm" novalidate>
+          <input id="organizationId" name="id" type="hidden">
+
+          <section class="form-section card" id="basicSection">
+            <div class="form-section__header">
+              <div>
+                <p class="eyebrow">BASIC INFORMATION</p>
+                <h2>基本情報</h2>
+              </div>
+              <span class="badge badge--gold">必須項目あり</span>
+            </div>
+
+            <div class="form-grid">
+              <div class="field form-grid__wide">
+                <label class="field__label" for="name">
+                  <span>組織・施設名</span>
+                  <em>必須</em>
+                </label>
+                <input id="name" name="name" type="text" maxlength="120" autocomplete="off" placeholder="例：私立 天星学園" required>
+                <p class="field__error" id="nameError" hidden>組織・施設名を入力してください。</p>
+              </div>
+
+              <div class="field">
+                <label class="field__label" for="reading">読み方</label>
+                <input id="reading" name="reading" type="text" maxlength="120" autocomplete="off" placeholder="例：しりつ てんせいがくえん">
+              </div>
+
+              <div class="field">
+                <label class="field__label" for="shortName">略称・通称</label>
+                <input id="shortName" name="shortName" type="text" maxlength="120" autocomplete="off" placeholder="例：天星学園">
+              </div>
+
+              <div class="field form-grid__wide">
+                <label class="field__label" for="work">作品・シリーズ名</label>
+                <input id="work" name="work" type="text" maxlength="120" autocomplete="off" placeholder="例：天星学園 設定資料集">
+              </div>
+
+              <div class="field">
+                <label class="field__label" for="type">種類・分類</label>
+                <input id="type" name="type" type="text" maxlength="100" autocomplete="off" placeholder="例：学校・企業・国家機関・秘密結社">
+              </div>
+
+              <div class="field">
+                <label class="field__label" for="status">活動状況</label>
+                <input id="status" name="status" type="text" maxlength="100" autocomplete="off" placeholder="例：活動中・解散済み・非公開">
+              </div>
+
+              <div class="field">
+                <label class="field__label" for="founded">設立・創設</label>
+                <input id="founded" name="founded" type="text" maxlength="100" autocomplete="off" placeholder="例：西暦2084年">
+              </div>
+
+              <div class="field">
+                <label class="field__label" for="location">所在地・拠点</label>
+                <input id="location" name="location" type="text" maxlength="160" autocomplete="off" placeholder="例：天星市中央区">
+              </div>
+
+              <div class="field">
+                <label class="field__label" for="leader">代表者・責任者</label>
+                <input id="leader" name="leader" type="text" maxlength="120" autocomplete="off" placeholder="例：理事長 ○○">
+              </div>
+
+              <div class="field">
+                <label class="field__label" for="parentOrganization">上位組織・所属</label>
+                <input id="parentOrganization" name="parentOrganization" type="text" maxlength="160" autocomplete="off" placeholder="例：天星学園法人">
+              </div>
+
+              <div class="field">
+                <label class="field__label" for="symbol">シンボル・モチーフ</label>
+                <input id="symbol" name="symbol" type="text" maxlength="160" autocomplete="off" placeholder="例：八芒星・惑星軌道">
+              </div>
+
+              <div class="field">
+                <label class="field__label" for="motto">理念・標語</label>
+                <input id="motto" name="motto" type="text" maxlength="200" autocomplete="off" placeholder="例：星を知り、未来を照らす">
+              </div>
+
+              <div class="field form-grid__wide">
+                <label class="field__label" for="tags">タグ</label>
+                <input id="tags" name="tags" type="text" maxlength="300" autocomplete="off" placeholder="例：学校, 名門校, 天文学, 寮制">
+                <p class="field__note">カンマ、または読点で区切って入力してください。</p>
+              </div>
+
+              <div class="field form-grid__wide">
+                <label class="field__label" for="summary">組織・施設概要</label>
+                <textarea id="summary" name="summary" rows="5" maxlength="1200" placeholder="一覧カードにも表示する、組織・施設の短い紹介文を入力してください。"></textarea>
+              </div>
+            </div>
+          </section>
+
+          <section class="form-section card" id="imageSection">
+            <div class="form-section__header">
+              <div>
+                <p class="eyebrow">IMAGE SETTINGS</p>
+                <h2>画像・テーマカラー</h2>
+              </div>
+            </div>
+
+            <div class="form-grid">
+              <div class="field form-grid__wide">
+                <span class="field__label">組織・施設画像</span>
+
+                <div class="image-uploader">
+                  <label class="image-uploader__dropzone" id="imageDropzone" for="imageInput">
+                    <span class="image-uploader__icon" aria-hidden="true">＋</span>
+                    <strong>画像を選択</strong>
+                    <span>JPG・PNG・WebPに対応</span>
+                  </label>
+
+                  <input id="imageInput" name="imageFile" type="file" accept="image/jpeg,image/png,image/webp" hidden>
+
+                  <div class="image-uploader__actions">
+                    <button class="mini-button" id="changeImageButton" type="button">画像を変更</button>
+                    <button class="mini-button" id="removeImageButton" type="button">画像を削除</button>
+                  </div>
+                </div>
+
+                <input id="image" name="image" type="hidden">
+                <p class="field__note">画像はブラウザ保存用に自動縮小されます。</p>
+              </div>
+
+              <div class="field">
+                <label class="field__label" for="imagePosition">画像の表示位置</label>
+                <select id="imagePosition" name="imagePosition">
+                  <option value="center">中央</option>
+                  <option value="center top">上寄せ</option>
+                  <option value="center bottom">下寄せ</option>
+                  <option value="left center">左寄せ</option>
+                  <option value="right center">右寄せ</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label class="field__label" for="themeColor">テーマカラー</label>
+                <div class="color-field">
+                  <input id="themeColorPicker" type="color" value="#8b6fc2" aria-label="テーマカラーを選択">
+                  <input id="themeColor" name="themeColor" type="text" maxlength="7" value="#8B6FC2" pattern="^#[0-9A-Fa-f]{6}$" placeholder="#8B6FC2">
+                </div>
+                <p class="field__error" id="themeColorError" hidden>6桁のHEXカラーコードを入力してください。</p>
+              </div>
+            </div>
+          </section>
+
+          <section class="form-section card" id="detailsSection">
+            <div class="form-section__header">
+              <div>
+                <p class="eyebrow">ORGANIZATION DETAILS</p>
+                <h2>組織・施設詳細</h2>
+              </div>
+              <span class="badge">設定資料</span>
+            </div>
+
+            <div class="form-grid">
+              <div class="field form-grid__wide">
+                <div class="field__label field__label--action">
+                  <label for="purpose">目的・役割</label>
+                  <button class="mini-button" type="button" data-copy-target="purpose">コピー</button>
+                </div>
+                <textarea id="purpose" name="purpose" rows="8" maxlength="5000" placeholder="この組織が存在する目的、社会的役割、活動方針などを入力してください。"></textarea>
+              </div>
+
+              <div class="field form-grid__wide">
+                <div class="field__label field__label--action">
+                  <label for="history">沿革・歴史</label>
+                  <button class="mini-button" type="button" data-copy-target="history">コピー</button>
+                </div>
+                <textarea id="history" name="history" rows="10" maxlength="8000" placeholder="創設の経緯、重要事件、変革、現在に至るまでの歴史を入力してください。"></textarea>
+              </div>
+
+              <div class="field form-grid__wide">
+                <div class="field__label field__label--action">
+                  <label for="structure">組織構造・部門</label>
+                  <button class="mini-button" type="button" data-copy-target="structure">コピー</button>
+                </div>
+                <textarea id="structure" name="structure" rows="10" maxlength="8000" placeholder="上層部、部署、階級、各部門の役割、指揮系統などを入力してください。"></textarea>
+              </div>
+            </div>
+          </section>
+
+          <section class="form-section card">
+            <div class="form-section__header">
+              <div>
+                <p class="eyebrow">WRITING GUIDE</p>
+                <h2>設定を書くときの補助メモ</h2>
+              </div>
+            </div>
+
+            <div class="guide-grid">
+              <article class="guide-card">
+                <h3>目的</h3>
+                <p>表向きの目的と、内部だけが知る本当の目的を分けて書くと立体的になります。</p>
+              </article>
+
+              <article class="guide-card">
+                <h3>歴史</h3>
+                <p>創設、転機、事件、現在の順で整理すると、設定の流れを追いやすくなります。</p>
+              </article>
+
+              <article class="guide-card">
+                <h3>構造</h3>
+                <p>最高責任者、主要部門、現場組織、外部協力者の順で書くと把握しやすくなります。</p>
+              </article>
+            </div>
+          </section>
+
+          <section class="form-section card" id="operationsSection">
+            <div class="form-section__header">
+              <div>
+                <p class="eyebrow">OPERATIONS</p>
+                <h2>活動・制度</h2>
+              </div>
+            </div>
+
+            <div class="form-grid">
+              <div class="field form-grid__wide">
+                <div class="field__label field__label--action">
+                  <label for="activities">主な活動</label>
+                  <button class="mini-button" type="button" data-copy-target="activities">コピー</button>
+                </div>
+                <textarea id="activities" name="activities" rows="9" maxlength="6000" placeholder="日常業務、任務、行事、研究、訓練、事業などを入力してください。"></textarea>
+              </div>
+
+              <div class="field">
+                <div class="field__label field__label--action">
+                  <label for="membership">構成員・加入条件</label>
+                  <button class="mini-button" type="button" data-copy-target="membership">コピー</button>
+                </div>
+                <textarea id="membership" name="membership" rows="8" maxlength="4000" placeholder="構成員の特徴、人数、採用方法、加入資格など"></textarea>
+              </div>
+
+              <div class="field">
+                <div class="field__label field__label--action">
+                  <label for="rules">規則・制度</label>
+                  <button class="mini-button" type="button" data-copy-target="rules">コピー</button>
+                </div>
+                <textarea id="rules" name="rules" rows="8" maxlength="4000" placeholder="校則、社則、戒律、禁止事項、昇格制度など"></textarea>
+              </div>
+
+              <div class="field form-grid__wide">
+                <div class="field__label field__label--action">
+                  <label for="resources">資金・設備・保有資源</label>
+                  <button class="mini-button" type="button" data-copy-target="resources">コピー</button>
+                </div>
+                <textarea id="resources" name="resources" rows="8" maxlength="5000" placeholder="予算、施設、技術、兵力、情報網、特殊装備などを入力してください。"></textarea>
+              </div>
+            </div>
+          </section>
+
+          <section class="form-section card" id="relationsSection">
+            <div class="form-section__header">
+              <div>
+                <p class="eyebrow">RELATIONS</p>
+                <h2>関係・影響</h2>
+              </div>
+            </div>
+
+            <div class="form-grid">
+              <div class="field">
+                <div class="field__label field__label--action">
+                  <label for="allies">友好・協力関係</label>
+                  <button class="mini-button" type="button" data-copy-target="allies">コピー</button>
+                </div>
+                <textarea id="allies" name="allies" rows="8" maxlength="5000" placeholder="同盟、取引先、協力組織、支援者など"></textarea>
+              </div>
+
+              <div class="field">
+                <div class="field__label field__label--action">
+                  <label for="enemies">敵対・競合関係</label>
+                  <button class="mini-button" type="button" data-copy-target="enemies">コピー</button>
+                </div>
+                <textarea id="enemies" name="enemies" rows="8" maxlength="5000" placeholder="敵対組織、競合勢力、対立理由など"></textarea>
+              </div>
+
+              <div class="field form-grid__wide">
+                <div class="field__label field__label--action">
+                  <label for="influence">社会的影響・評判</label>
+                  <button class="mini-button" type="button" data-copy-target="influence">コピー</button>
+                </div>
+                <textarea id="influence" name="influence" rows="8" maxlength="5000" placeholder="社会からの評価、知名度、権力、地域や物語への影響などを入力してください。"></textarea>
+              </div>
+            </div>
+          </section>
+
+          <section class="form-section card" id="facilitySection">
+            <div class="form-section__header">
+              <div>
+                <p class="eyebrow">FACILITY & DESIGN</p>
+                <h2>施設・外観</h2>
+              </div>
+            </div>
+
+            <div class="form-grid">
+              <div class="field form-grid__wide">
+                <div class="field__label field__label--action">
+                  <label for="appearance">外観・建築</label>
+                  <button class="mini-button" type="button" data-copy-target="appearance">コピー</button>
+                </div>
+                <textarea id="appearance" name="appearance" rows="10" maxlength="7000" placeholder="建物の外観、建築様式、規模、素材、色、象徴的な装飾などを入力してください。"></textarea>
+              </div>
+
+              <div class="field form-grid__wide">
+                <div class="field__label field__label--action">
+                  <label for="interior">内部・主要施設</label>
+                  <button class="mini-button" type="button" data-copy-target="interior">コピー</button>
+                </div>
+                <textarea id="interior" name="interior" rows="10" maxlength="7000" placeholder="内部構造、主要な部屋、設備、立入禁止区域などを入力してください。"></textarea>
+              </div>
+
+              <div class="field form-grid__wide">
+                <div class="field__label field__label--action">
+                  <label for="atmosphere">雰囲気・印象</label>
+                  <button class="mini-button" type="button" data-copy-target="atmosphere">コピー</button>
+                </div>
+                <textarea id="atmosphere" name="atmosphere" rows="7" maxlength="4000" placeholder="明るい、厳格、神秘的、閉鎖的、活気があるなど、全体の印象を入力してください。"></textarea>
+              </div>
+            </div>
+          </section>
+
+          <section class="form-section card" id="promptSection">
+            <div class="form-section__header">
+              <div>
+                <p class="eyebrow">AI PROMPT</p>
+                <h2>AI画像生成プロンプト</h2>
+              </div>
+              <span class="badge">IMAGE GENERATION</span>
+            </div>
+
+            <div class="form-grid">
+              <div class="field form-grid__wide">
+                <div class="field__label field__label--action">
+                  <label for="promptJa">日本語プロンプト</label>
+                  <button class="mini-button" type="button" data-copy-target="promptJa">コピー</button>
+                </div>
+                <textarea id="promptJa" name="promptJa" rows="12" maxlength="12000" placeholder="建物の外観、建築様式、周辺環境、時間帯、構図、光、画風などを日本語で入力してください。"></textarea>
+              </div>
+
+              <div class="field form-grid__wide">
+                <div class="field__label field__label--action">
+                  <label for="promptEn">英語プロンプト</label>
+                  <button class="mini-button" type="button" data-copy-target="promptEn">コピー</button>
+                </div>
+                <textarea id="promptEn" name="promptEn" rows="12" maxlength="12000" placeholder="masterpiece, best quality, grand academy building, celestial architecture..."></textarea>
+              </div>
+
+              <div class="field form-grid__wide">
+                <div class="field__label field__label--action">
+                  <label for="negativePrompt">ネガティブプロンプト</label>
+                  <button class="mini-button" type="button" data-copy-target="negativePrompt">コピー</button>
+                </div>
+                <textarea id="negativePrompt" name="negativePrompt" rows="8" maxlength="8000" placeholder="low quality, blurry, distorted architecture, text, watermark..."></textarea>
+              </div>
+            </div>
+          </section>
+
+          <section class="form-section card" id="notesSection">
+            <div class="form-section__header">
+              <div>
+                <p class="eyebrow">NOTES</p>
+                <h2>自由メモ</h2>
+              </div>
+            </div>
+
+            <div class="form-grid">
+              <div class="field form-grid__wide">
+                <div class="field__label field__label--action">
+                  <label for="notes">その他の設定・メモ</label>
+                  <button class="mini-button" type="button" data-copy-target="notes">コピー</button>
+                </div>
+                <textarea id="notes" name="notes" rows="12" maxlength="12000" placeholder="未分類の設定、制作メモ、修正予定、物語上の役割などを自由に入力してください。"></textarea>
+              </div>
+            </div>
+          </section>
+
+          <section class="form-actions card">
+            <div class="form-actions__status">
+              <p class="form-actions__label">最終更新</p>
+              <p class="form-actions__date" id="updatedAt">未保存</p>
+            </div>
+
+            <div class="form-actions__buttons">
+              <button class="button button--sub js-duplicate-organization" type="button">複製</button>
+              <button class="button button--danger" id="deleteButton" type="button" hidden>削除</button>
+              <button class="button button--primary js-save-organization" type="submit">保存する</button>
+            </div>
+          </section>
+        </form>
+      </div>
+    </main>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden>
+    <p id="toastMessage">保存しました。</p>
+  </div>
+
+  <dialog class="dialog" id="deleteDialog">
+    <div class="dialog__inner">
+      <div class="dialog__header">
+        <div>
+          <p class="eyebrow">DELETE ORGANIZATION</p>
+          <h2>組織・施設を削除しますか？</h2>
+        </div>
+        <button class="dialog__close" id="deleteDialogClose" type="button" aria-label="閉じる">×</button>
+      </div>
+
+      <p class="dialog__text">
+        「<strong id="deleteTargetName">この組織・施設</strong>」を削除します。削除したデータは元に戻せません。
+      </p>
+
+      <div class="dialog__actions">
+        <button class="button button--secondary" id="deleteCancelButton" type="button">キャンセル</button>
+        <button class="button button--danger" id="deleteConfirmButton" type="button">削除する</button>
+      </div>
+    </div>
+  </dialog>
+
+  <dialog class="dialog" id="unsavedDialog">
+    <div class="dialog__inner">
+      <div class="dialog__header">
+        <div>
+          <p class="eyebrow">UNSAVED CHANGES</p>
+          <h2>変更内容が保存されていません</h2>
+        </div>
+        <button class="dialog__close" id="unsavedDialogClose" type="button" aria-label="閉じる">×</button>
+      </div>
+
+      <p class="dialog__text">このまま移動すると、保存していない変更内容が失われます。</p>
+
+      <div class="dialog__actions">
+        <button class="button button--secondary" id="unsavedStayButton" type="button">編集を続ける</button>
+        <button class="button button--danger" id="unsavedLeaveButton" type="button">保存せず移動</button>
+      </div>
+    </div>
+  </dialog>
+
+  <script src="js/storage.js"></script>
+  <script src="js/common.js"></script>
+  <script src="js/organization.js"></script>
+</body>
+</html>
