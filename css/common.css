@@ -978,3 +978,24 @@ select:disabled {
     transition-duration: 0.01ms !important;
   }
 }
+
+dialog {
+  margin: auto;
+  padding: 0;
+  border: none;
+  border-radius: 20px;
+  background: transparent;
+  max-width: 520px;
+  width: calc(100% - 32px);
+}
+
+dialog[open] {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+dialog::backdrop {
+  background: rgba(8, 12, 24, .55);
+  backdrop-filter: blur(4px);
+}

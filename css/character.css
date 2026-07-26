@@ -781,15 +781,22 @@
 ========================================================= */
 
 .dialog {
+  position: fixed;
+  inset: 0;
   width: min(520px, calc(100vw - 32px));
   max-width: none;
   max-height: calc(100dvh - 32px);
+  margin: auto;
   padding: 0;
   overflow: visible;
   border: 0;
   border-radius: 20px;
   background: transparent;
-  color: var(--color-text, var(--character-text));
+  color: #1b2338;
+}
+
+.dialog[open] {
+  display: block;
 }
 
 .dialog::backdrop {
@@ -798,8 +805,9 @@
 }
 
 .dialog__inner {
+  width: 100%;
   overflow: hidden;
-  border: 1px solid var(--color-border, var(--character-border));
+  border: 1px solid #d8dde7;
   border-radius: 20px;
   background: #fff;
   box-shadow: 0 24px 80px rgb(15 23 42 / 28%);
@@ -811,11 +819,20 @@
   justify-content: space-between;
   gap: 20px;
   padding: 24px 24px 18px;
-  border-bottom: 1px solid var(--color-border, var(--character-border));
+  border-bottom: 1px solid #d8dde7;
+}
+
+.dialog__header .eyebrow {
+  margin: 0;
+  color: #6176f6;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
 }
 
 .dialog__header h2 {
   margin: 5px 0 0;
+  color: #1b2338;
   font-size: 20px;
   font-weight: 750;
   line-height: 1.45;
@@ -828,12 +845,22 @@
   width: 36px;
   height: 36px;
   padding: 0;
-  border: 1px solid var(--color-border, #d8dde7);
+  border: 1px solid #d8dde7;
   border-radius: 10px;
   background: #fff;
-  color: var(--color-text-sub, var(--character-text-sub));
+  color: #475569;
   cursor: pointer;
   font-size: 22px;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.dialog__close:hover {
+  border-color: #b8c0cf;
+  background: #f8fafc;
+  color: #1b2338;
 }
 
 .dialog__body {
@@ -842,21 +869,26 @@
 
 .dialog__body p {
   margin: 0;
-  color: var(--color-text-sub, var(--character-text-sub));
-  font-size: 13px;
+  color: #4b5565;
+  font-size: 14px;
   line-height: 1.8;
+}
+
+.dialog__body strong {
+  color: #1b2338;
 }
 
 .dialog__target {
   margin-top: 14px !important;
   padding: 12px 14px;
-  border: 1px solid rgb(216 72 95 / 16%);
+  border: 1px solid rgb(216 72 95 / 22%);
   border-radius: 10px;
   background: #fff7f8;
+  color: #4b5565;
 }
 
 .dialog__target strong {
-  color: var(--character-danger);
+  color: #d8485f;
 }
 
 .dialog__actions {
@@ -865,6 +897,56 @@
   justify-content: flex-end;
   gap: 10px;
   padding: 18px 24px 24px;
+}
+
+.dialog__actions .button {
+  min-width: 130px;
+}
+
+.dialog__actions .button--sub,
+.dialog__actions .button--secondary {
+  border: 1px solid #cbd5e1;
+  background: #fff;
+  color: #334155;
+}
+
+.dialog__actions .button--sub:hover,
+.dialog__actions .button--secondary:hover {
+  background: #f8fafc;
+}
+
+.dialog__actions .button--danger {
+  border-color: #f2b9c2;
+  background: #fff5f6;
+  color: #d8485f;
+}
+
+.dialog__actions .button--danger:hover {
+  background: #ffe9ec;
+}
+
+@media (max-width: 560px) {
+  .dialog {
+    width: calc(100vw - 24px);
+    max-height: calc(100dvh - 24px);
+  }
+
+  .dialog__header {
+    padding: 20px 20px 16px;
+  }
+
+  .dialog__body {
+    padding: 20px;
+  }
+
+  .dialog__actions {
+    padding: 16px 20px 20px;
+  }
+
+  .dialog__actions .button {
+    flex: 1 1 100%;
+    width: 100%;
+  }
 }
 
 /* =========================================================
