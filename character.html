@@ -36,142 +36,92 @@
     <!-- ======================================
          Sidebar
     ======================================= -->
-
-    <aside
-      class="sidebar"
-      id="sidebar"
-      aria-label="メインメニュー"
+<aside class="sidebar" id="sidebar" aria-label="メインメニュー">
+  <div class="sidebar__header">
+    <a
+      class="brand"
+      href="index.html"
+      aria-label="ダッシュボードへ戻る"
     >
-      <div class="sidebar__header">
-        <a
-          class="brand"
-          href="index.html"
-          aria-label="キャラクター一覧へ戻る"
-        >
-          <span
-            class="brand__mark"
-            aria-hidden="true"
-          >
-            ✦
-          </span>
+      <span class="brand__mark" aria-hidden="true">✦</span>
 
-          <span class="brand__text">
-            <strong>
-              Character Archive
-            </strong>
+      <span class="brand__text">
+        <strong>Creative Archive</strong>
+        <small>創作資料管理</small>
+      </span>
+    </a>
 
-            <small>
-              キャラクター設定管理
-            </small>
-          </span>
-        </a>
+    <button
+      class="icon-button sidebar__close"
+      id="sidebarClose"
+      type="button"
+      aria-label="メニューを閉じる"
+    >
+      ×
+    </button>
+  </div>
 
-        <button
-          class="icon-button sidebar__close"
-          id="sidebarClose"
-          type="button"
-          aria-label="メニューを閉じる"
-        >
-          ×
-        </button>
-      </div>
+  <nav class="sidebar__nav">
 
-      <nav class="sidebar__nav">
-        <a
-          class="sidebar__link"
-          href="index.html"
-        >
-          <span
-            class="sidebar__icon"
-            aria-hidden="true"
-          >
-            ◫
-          </span>
+    <a
+      class="sidebar__link"
+      href="index.html"
+    >
+      <span class="sidebar__icon" aria-hidden="true">⌂</span>
+      <span>ダッシュボード</span>
+    </a>
 
-          <span>
-            キャラクター一覧
-          </span>
-        </a>
+    <a
+      class="sidebar__link"
+      href="index.html?view=world"
+    >
+      <span class="sidebar__icon" aria-hidden="true">◎</span>
+      <span>世界観一覧</span>
+    </a>
 
-        <button
-          class="sidebar__link sidebar__button is-active"
-          type="button"
-          data-new-character
-        >
-          <span
-            class="sidebar__icon"
-            aria-hidden="true"
-          >
-            ＋
-          </span>
+    <button
+      class="sidebar__link sidebar__button is-active"
+      type="button"
+      data-new-world
+    >
+      <span class="sidebar__icon" aria-hidden="true">＋</span>
+      <span>新規世界観</span>
+    </button>
 
-          <span>
-            新規キャラクター
-          </span>
-        </button>
+    <button
+      class="sidebar__link sidebar__button js-duplicate-world"
+      type="button"
+    >
+      <span class="sidebar__icon" aria-hidden="true">⧉</span>
+      <span>この世界観を複製</span>
+    </button>
 
-        <button
-          class="sidebar__link sidebar__button"
-          id="duplicateButton"
-          type="button"
-        >
-          <span
-            class="sidebar__icon"
-            aria-hidden="true"
-          >
-            ⧉
-          </span>
+    <div class="sidebar__separator"></div>
 
-          <span>
-            このキャラを複製
-          </span>
-        </button>
+    <button
+      class="sidebar__link sidebar__button"
+      id="exportWorldButton"
+      type="button"
+    >
+      <span class="sidebar__icon" aria-hidden="true">⇩</span>
+      <span>JSONを書き出す</span>
+    </button>
 
-        <button
-          class="sidebar__link sidebar__button"
-          id="exportCharacterButton"
-          type="button"
-        >
-          <span
-            class="sidebar__icon"
-            aria-hidden="true"
-          >
-            ⇩
-          </span>
+    <button
+      class="sidebar__link sidebar__button"
+      id="printButton"
+      type="button"
+    >
+      <span class="sidebar__icon" aria-hidden="true">▣</span>
+      <span>設定資料を印刷</span>
+    </button>
+  </nav>
 
-          <span>
-            JSONを書き出す
-          </span>
-        </button>
-
-        <button
-          class="sidebar__link sidebar__button"
-          id="printButton"
-          type="button"
-        >
-          <span
-            class="sidebar__icon"
-            aria-hidden="true"
-          >
-            ▣
-          </span>
-
-          <span>
-            設定資料を印刷
-          </span>
-        </button>
-      </nav>
-
-      <div class="sidebar__note">
-        <p>
-          入力内容は、このブラウザ内に保存されます。
-        </p>
-
-        <p>
-          画像を多く登録すると、保存容量が不足する場合があります。
-        </p>
-      </div>
-    </aside>
+  <div class="sidebar__note">
+    <p>入力内容は、このブラウザ内に保存されます。</p>
+    <p>画像を多く登録すると、保存容量が不足する場合があります。</p>
+  </div>
+</aside>
 
     <button
       class="sidebar-overlay"

@@ -13,50 +13,92 @@
 
 <body>
   <div class="app">
-    <aside class="sidebar" id="sidebar" aria-label="メインメニュー">
-      <div class="sidebar__header">
-        <a class="brand" href="index.html?view=glossary" aria-label="用語集へ戻る">
-          <span class="brand__mark" aria-hidden="true">✦</span>
-          <span class="brand__text">
-            <strong>Creative Archive</strong>
-            <small>創作資料管理</small>
-          </span>
-        </a>
+<aside class="sidebar" id="sidebar" aria-label="メインメニュー">
+  <div class="sidebar__header">
+    <a
+      class="brand"
+      href="index.html"
+      aria-label="ダッシュボードへ戻る"
+    >
+      <span class="brand__mark" aria-hidden="true">✦</span>
 
-        <button class="icon-button sidebar__close" id="sidebarClose" type="button" aria-label="メニューを閉じる">×</button>
-      </div>
+      <span class="brand__text">
+        <strong>Creative Archive</strong>
+        <small>創作資料管理</small>
+      </span>
+    </a>
 
-      <nav class="sidebar__nav">
-        <a class="sidebar__link" href="index.html?view=glossary">
-          <span class="sidebar__icon" aria-hidden="true">Aa</span>
-          <span>用語集</span>
-        </a>
+    <button
+      class="icon-button sidebar__close"
+      id="sidebarClose"
+      type="button"
+      aria-label="メニューを閉じる"
+    >
+      ×
+    </button>
+  </div>
 
-        <button class="sidebar__link sidebar__button is-active" type="button" data-new-glossary>
-          <span class="sidebar__icon" aria-hidden="true">＋</span>
-          <span>新規用語</span>
-        </button>
+  <nav class="sidebar__nav">
 
-        <button class="sidebar__link sidebar__button js-duplicate-glossary" type="button">
-          <span class="sidebar__icon" aria-hidden="true">⧉</span>
-          <span>この用語を複製</span>
-        </button>
+    <a
+      class="sidebar__link"
+      href="index.html"
+    >
+      <span class="sidebar__icon" aria-hidden="true">⌂</span>
+      <span>ダッシュボード</span>
+    </a>
 
-        <button class="sidebar__link sidebar__button" id="exportGlossaryButton" type="button">
-          <span class="sidebar__icon" aria-hidden="true">⇩</span>
-          <span>JSONを書き出す</span>
-        </button>
+    <a
+      class="sidebar__link"
+      href="index.html?view=world"
+    >
+      <span class="sidebar__icon" aria-hidden="true">◎</span>
+      <span>世界観一覧</span>
+    </a>
 
-        <button class="sidebar__link sidebar__button" id="printButton" type="button">
-          <span class="sidebar__icon" aria-hidden="true">▣</span>
-          <span>設定資料を印刷</span>
-        </button>
-      </nav>
+    <button
+      class="sidebar__link sidebar__button is-active"
+      type="button"
+      data-new-world
+    >
+      <span class="sidebar__icon" aria-hidden="true">＋</span>
+      <span>新規世界観</span>
+    </button>
 
-      <div class="sidebar__note">
-        <p>入力内容は、このブラウザ内に保存されます。</p>
-      </div>
-    </aside>
+    <button
+      class="sidebar__link sidebar__button js-duplicate-world"
+      type="button"
+    >
+      <span class="sidebar__icon" aria-hidden="true">⧉</span>
+      <span>この世界観を複製</span>
+    </button>
+
+    <div class="sidebar__separator"></div>
+
+    <button
+      class="sidebar__link sidebar__button"
+      id="exportWorldButton"
+      type="button"
+    >
+      <span class="sidebar__icon" aria-hidden="true">⇩</span>
+      <span>JSONを書き出す</span>
+    </button>
+
+    <button
+      class="sidebar__link sidebar__button"
+      id="printButton"
+      type="button"
+    >
+      <span class="sidebar__icon" aria-hidden="true">▣</span>
+      <span>設定資料を印刷</span>
+    </button>
+  </nav>
+
+  <div class="sidebar__note">
+    <p>入力内容は、このブラウザ内に保存されます。</p>
+    <p>画像を多く登録すると、保存容量が不足する場合があります。</p>
+  </div>
+</aside>
 
     <button class="sidebar-overlay" id="sidebarOverlay" type="button" aria-label="メニューを閉じる"></button>
 
