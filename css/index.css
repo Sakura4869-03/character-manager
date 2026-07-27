@@ -572,6 +572,79 @@ button.stat-card:hover {
   letter-spacing: 0.08em;
 }
 
+.archive-card__badge {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  z-index: 3;
+  display: inline-flex;
+  min-height: 28px;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 11px;
+  color: #ffffff;
+  background: rgba(11, 16, 32, 0.78);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 999px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(12px);
+  font-size: 9px;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: 0.12em;
+  white-space: nowrap;
+}
+
+/* キャラクター */
+.archive-card--character .archive-card__badge {
+  color: #eef1ff;
+  background: rgba(115, 140, 255, 0.8);
+  border-color: rgba(181, 193, 255, 0.8);
+  box-shadow:
+    0 8px 20px rgba(0, 0, 0, 0.3),
+    0 0 16px rgba(115, 140, 255, 0.3);
+}
+
+/* 世界観 */
+.archive-card--world .archive-card__badge {
+  color: #f1f3ff;
+  background: rgba(91, 103, 183, 0.82);
+  border-color: rgba(155, 166, 230, 0.8);
+  box-shadow:
+    0 8px 20px rgba(0, 0, 0, 0.3),
+    0 0 16px rgba(91, 103, 183, 0.3);
+}
+
+/* 組織・施設 */
+.archive-card--organization .archive-card__badge {
+  color: #f7f1ff;
+  background: rgba(139, 111, 194, 0.82);
+  border-color: rgba(196, 169, 238, 0.8);
+  box-shadow:
+    0 8px 20px rgba(0, 0, 0, 0.3),
+    0 0 16px rgba(139, 111, 194, 0.3);
+}
+
+/* 用語集 */
+.archive-card--glossary .archive-card__badge {
+  color: #fff7ed;
+  background: rgba(208, 138, 69, 0.84);
+  border-color: rgba(243, 188, 133, 0.85);
+  box-shadow:
+    0 8px 20px rgba(0, 0, 0, 0.3),
+    0 0 16px rgba(208, 138, 69, 0.3);
+}
+
+/* アイテム */
+.archive-card--item .archive-card__badge {
+  color: #f8f3ff;
+  background: rgba(138, 106, 184, 0.84);
+  border-color: rgba(202, 173, 235, 0.8);
+  box-shadow:
+    0 8px 20px rgba(0, 0, 0, 0.3),
+    0 0 16px rgba(138, 106, 184, 0.3);
+}
+
 .archive-card__color {
   position: absolute;
   top: 13px;
