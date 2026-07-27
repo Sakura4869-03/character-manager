@@ -14,9 +14,6 @@
   const DEFAULT_COLOR =
     "#8A6AB8";
 
-  const STORAGE_KEY =
-    "characterArchiveItems";
-
   /* =======================================================
      DOM Helpers
   ======================================================= */
@@ -272,11 +269,16 @@
   ======================================================= */
 
   function getStorageApi() {
-    return (
-      window.CharacterStorage ||
-      window.CreativeStorage ||
-      null
-    );
+    const storage =
+      window.CreativeStorage;
+
+    if (!storage) {
+      throw new Error(
+        "CreativeStorageが読み込まれていません。"
+      );
+    }
+
+    return storage;
   }
 
   function createId() {
@@ -828,47 +830,15 @@
   ======================================================= */
 
   function getAllItems() {
-    const storage =
-      getStorageApi();
+    const items =
+      getStorageApi()
+        .getItems();
 
-    if (
-      storage &&
-      typeof storage.getItems ===
-        "function"
-    ) {
-      const items =
-        storage.getItems();
-
-      return Array.isArray(
-        items
-      )
-        ? items
-        : [];
-    }
-
-    try {
-      const parsed =
-        JSON.parse(
-          localStorage.getItem(
-            STORAGE_KEY
-          ) || "[]"
-        );
-
-      return Array.isArray(
-        parsed
-      )
-        ? parsed
-        : [];
-    } catch (
-      error
-    ) {
-      console.error(
-        "アイテムデータを読み込めませんでした。",
-        error
-      );
-
-      return [];
-    }
+    return Array.isArray(
+      items
+    )
+      ? items
+      : [];
   }
 
   function findItemById(
@@ -878,75 +848,21 @@
       return null;
     }
 
-    const storage =
-      getStorageApi();
-
-    if (
-      storage &&
-      typeof storage.getItemById ===
-        "function"
-    ) {
-      return (
-        storage.getItemById(
+    return (
+      getStorageApi()
+        .getItemById(
           id
         ) || null
-      );
-    }
-
-    return (
-      getAllItems().find(
-        (item) =>
-          String(item.id) ===
-          String(id)
-      ) || null
     );
   }
 
   function persistItem(
     data
   ) {
-    const storage =
-      getStorageApi();
-
-    if (
-      storage &&
-      typeof storage.saveItem ===
-        "function"
-    ) {
-      return storage.saveItem(
+    return getStorageApi()
+      .saveItem(
         data
       );
-    }
-
-    const items =
-      getAllItems();
-
-    const index =
-      items.findIndex(
-        (item) =>
-          String(item.id) ===
-          String(data.id)
-      );
-
-    if (
-      index >= 0
-    ) {
-      items[index] =
-        data;
-    } else {
-      items.unshift(
-        data
-      );
-    }
-
-    localStorage.setItem(
-      STORAGE_KEY,
-      JSON.stringify(
-        items
-      )
-    );
-
-    return data;
   }
 
   function removeItem(
@@ -956,45 +872,12 @@
       return false;
     }
 
-    const storage =
-      getStorageApi();
-
-    if (
-      storage &&
-      typeof storage.deleteItem ===
-        "function"
-    ) {
-      return storage.deleteItem(
+    return getStorageApi()
+      .deleteItem(
         id
       );
-    }
-
-    const items =
-      getAllItems();
-
-    const filtered =
-      items.filter(
-        (item) =>
-          String(item.id) !==
-          String(id)
-      );
-
-    if (
-      filtered.length ===
-      items.length
-    ) {
-      return false;
-    }
-
-    localStorage.setItem(
-      STORAGE_KEY,
-      JSON.stringify(
-        filtered
-      )
-    );
-
-    return true;
   }
+
     /* =======================================================
      Validation
   ======================================================= */

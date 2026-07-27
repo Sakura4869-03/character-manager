@@ -7,9 +7,6 @@
 ========================================================= */
 
 window.ItemList = (() => {
-  const STORAGE_KEY =
-    "characterArchiveItems";
-
   const DEFAULT_COLOR =
     "#4F9D8B";
 
@@ -221,16 +218,7 @@ window.ItemList = (() => {
     );
   }
 
-  function handleStorageChange(
-    event
-  ) {
-    if (
-      event.key !==
-      STORAGE_KEY
-    ) {
-      return;
-    }
-
+  function handleStorageChange() {
     loadItems();
     updateCount();
 
@@ -247,37 +235,30 @@ window.ItemList = (() => {
      Storage
   ======================================================= */
 
-  function loadItems() {
+  function getStorageApi() {
     const storage =
-      getStorageApi();
+      window.CreativeStorage;
 
-    if (
-      storage &&
-      typeof storage.getItems ===
-        "function"
-    ) {
-      const items =
-        storage.getItems();
-
-      state.items =
-        Array.isArray(items)
-          ? items
-          : [];
-
-      return;
+    if (!storage) {
+      throw new Error(
+        "CreativeStorageが読み込まれていません。"
+      );
     }
 
+    return storage;
+  }
+
+  function loadItems() {
     try {
-      const parsed =
-        JSON.parse(
-          localStorage.getItem(
-            STORAGE_KEY
-          ) || "[]"
-        );
+      const items =
+        getStorageApi()
+          .getItems();
 
       state.items =
-        Array.isArray(parsed)
-          ? parsed
+        Array.isArray(
+          items
+        )
+          ? items
           : [];
     } catch (error) {
       console.error(
@@ -287,14 +268,6 @@ window.ItemList = (() => {
 
       state.items = [];
     }
-  }
-
-  function getStorageApi() {
-    return (
-      window.CharacterStorage ||
-      window.CreativeStorage ||
-      null
-    );
   }
 
   /* =======================================================

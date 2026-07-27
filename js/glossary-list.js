@@ -7,9 +7,6 @@
 ========================================================= */
 
 window.GlossaryList = (() => {
-  const STORAGE_KEY =
-    "characterArchiveGlossary";
-
   const DEFAULT_COLOR =
     "#D08A45";
 
@@ -221,16 +218,7 @@ window.GlossaryList = (() => {
     );
   }
 
-  function handleStorageChange(
-    event
-  ) {
-    if (
-      event.key !==
-      STORAGE_KEY
-    ) {
-      return;
-    }
-
+  function handleStorageChange() {
     loadGlossaryItems();
     updateCount();
 
@@ -247,39 +235,30 @@ window.GlossaryList = (() => {
      Storage
   ======================================================= */
 
-  function loadGlossaryItems() {
+  function getStorageApi() {
     const storage =
-      getStorageApi();
+      window.CreativeStorage;
 
-    if (
-      storage &&
-      typeof storage.getGlossaryItems ===
-        "function"
-    ) {
+    if (!storage) {
+      throw new Error(
+        "CreativeStorageが読み込まれていません。"
+      );
+    }
+
+    return storage;
+  }
+
+  function loadGlossaryItems() {
+    try {
       const glossaryItems =
-        storage.getGlossaryItems();
+        getStorageApi()
+          .getGlossaryItems();
 
       state.glossaryItems =
         Array.isArray(
           glossaryItems
         )
           ? glossaryItems
-          : [];
-
-      return;
-    }
-
-    try {
-      const parsed =
-        JSON.parse(
-          localStorage.getItem(
-            STORAGE_KEY
-          ) || "[]"
-        );
-
-      state.glossaryItems =
-        Array.isArray(parsed)
-          ? parsed
           : [];
     } catch (error) {
       console.error(
@@ -291,18 +270,9 @@ window.GlossaryList = (() => {
     }
   }
 
-  function getStorageApi() {
-    return (
-      window.CharacterStorage ||
-      window.CreativeStorage ||
-      null
-    );
-  }
-
   /* =======================================================
      Render
   ======================================================= */
-
   function render() {
     loadGlossaryItems();
     updateCount();

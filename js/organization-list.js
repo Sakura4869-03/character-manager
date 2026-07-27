@@ -7,9 +7,6 @@
 ========================================================= */
 
 window.OrganizationList = (() => {
-  const STORAGE_KEY =
-    "characterArchiveOrganizations";
-
   const DEFAULT_COLOR =
     "#8B6FC2";
 
@@ -221,16 +218,7 @@ window.OrganizationList = (() => {
     );
   }
 
-  function handleStorageChange(
-    event
-  ) {
-    if (
-      event.key !==
-      STORAGE_KEY
-    ) {
-      return;
-    }
-
+  function handleStorageChange() {
     loadOrganizations();
     updateCount();
 
@@ -247,39 +235,30 @@ window.OrganizationList = (() => {
      Storage
   ======================================================= */
 
-  function loadOrganizations() {
+  function getStorageApi() {
     const storage =
-      getStorageApi();
+      window.CreativeStorage;
 
-    if (
-      storage &&
-      typeof storage.getOrganizations ===
-        "function"
-    ) {
+    if (!storage) {
+      throw new Error(
+        "CreativeStorageが読み込まれていません。"
+      );
+    }
+
+    return storage;
+  }
+
+  function loadOrganizations() {
+    try {
       const organizations =
-        storage.getOrganizations();
+        getStorageApi()
+          .getOrganizations();
 
       state.organizations =
         Array.isArray(
           organizations
         )
           ? organizations
-          : [];
-
-      return;
-    }
-
-    try {
-      const parsed =
-        JSON.parse(
-          localStorage.getItem(
-            STORAGE_KEY
-          ) || "[]"
-        );
-
-      state.organizations =
-        Array.isArray(parsed)
-          ? parsed
           : [];
     } catch (error) {
       console.error(
@@ -291,18 +270,10 @@ window.OrganizationList = (() => {
     }
   }
 
-  function getStorageApi() {
-    return (
-      window.CharacterStorage ||
-      window.CreativeStorage ||
-      null
-    );
-  }
-
   /* =======================================================
      Render
   ======================================================= */
-
+  
   function render() {
     loadOrganizations();
     updateCount();

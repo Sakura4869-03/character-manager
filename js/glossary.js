@@ -12,10 +12,6 @@
   ======================================================= */
 
   const DEFAULT_COLOR = "#D08A45";
-
-  const STORAGE_KEY =
-    "characterArchiveGlossary";
-
   /* =======================================================
      DOM Helpers
   ======================================================= */
@@ -222,13 +218,18 @@
      Basic Helpers
   ======================================================= */
 
-  function getStorageApi() {
-    return (
-      window.CharacterStorage ||
-      window.CreativeStorage ||
-      null
+function getStorageApi() {
+  const storage =
+    window.CreativeStorage;
+
+  if (!storage) {
+    throw new Error(
+      "CreativeStorageが読み込まれていません。"
     );
   }
+
+  return storage;
+}
 
   function createId() {
     const storage =
@@ -748,47 +749,20 @@
      Storage
   ======================================================= */
 
+  /* =======================================================
+     Storage
+  ======================================================= */
+
   function getAllGlossaryItems() {
-    const storage =
-      getStorageApi();
+    const glossaryItems =
+      getStorageApi()
+        .getGlossaryItems();
 
-    if (
-      storage &&
-      typeof storage
-        .getGlossaryItems ===
-        "function"
-    ) {
-      const glossaryItems =
-        storage.getGlossaryItems();
-
-      return Array.isArray(
-        glossaryItems
-      )
-        ? glossaryItems
-        : [];
-    }
-
-    try {
-      const parsed =
-        JSON.parse(
-          localStorage.getItem(
-            STORAGE_KEY
-          ) || "[]"
-        );
-
-      return Array.isArray(
-        parsed
-      )
-        ? parsed
-        : [];
-    } catch (error) {
-      console.error(
-        "用語データを読み込めませんでした。",
-        error
-      );
-
-      return [];
-    }
+    return Array.isArray(
+      glossaryItems
+    )
+      ? glossaryItems
+      : [];
   }
 
   function findGlossaryItemById(
@@ -798,29 +772,10 @@
       return null;
     }
 
-    const storage =
-      getStorageApi();
-
-    if (
-      storage &&
-      typeof storage
-        .getGlossaryItemById ===
-        "function"
-    ) {
-      return (
-        storage
-          .getGlossaryItemById(
-            id
-          ) || null
-      );
-    }
-
     return (
-      getAllGlossaryItems()
-        .find(
-          (item) =>
-            String(item.id) ===
-            String(id)
+      getStorageApi()
+        .getGlossaryItemById(
+          id
         ) || null
     );
   }
@@ -828,51 +783,10 @@
   function persistGlossaryItem(
     data
   ) {
-    const storage =
-      getStorageApi();
-
-    if (
-      storage &&
-      typeof storage
-        .saveGlossaryItem ===
-        "function"
-    ) {
-      return storage
-        .saveGlossaryItem(
-          data
-        );
-    }
-
-    const glossaryItems =
-      getAllGlossaryItems();
-
-    const index =
-      glossaryItems
-        .findIndex(
-          (item) =>
-            String(item.id) ===
-            String(data.id)
-        );
-
-    if (
-      index >= 0
-    ) {
-      glossaryItems[index] =
-        data;
-    } else {
-      glossaryItems.unshift(
+    return getStorageApi()
+      .saveGlossaryItem(
         data
       );
-    }
-
-    localStorage.setItem(
-      STORAGE_KEY,
-      JSON.stringify(
-        glossaryItems
-      )
-    );
-
-    return data;
   }
 
   function removeGlossaryItem(
@@ -882,46 +796,10 @@
       return false;
     }
 
-    const storage =
-      getStorageApi();
-
-    if (
-      storage &&
-      typeof storage
-        .deleteGlossaryItem ===
-        "function"
-    ) {
-      return storage
-        .deleteGlossaryItem(
-          id
-        );
-    }
-
-    const glossaryItems =
-      getAllGlossaryItems();
-
-    const filteredItems =
-      glossaryItems.filter(
-        (item) =>
-          String(item.id) !==
-          String(id)
+    return getStorageApi()
+      .deleteGlossaryItem(
+        id
       );
-
-    if (
-      glossaryItems.length ===
-      filteredItems.length
-    ) {
-      return false;
-    }
-
-    localStorage.setItem(
-      STORAGE_KEY,
-      JSON.stringify(
-        filteredItems
-      )
-    );
-
-    return true;
   }
     /* =======================================================
      Validation
@@ -1154,70 +1032,62 @@
   ======================================================= */
 
   function initializeNewGlossary() {
-    const storage =
-      getStorageApi();
+    const empty = {
+      id:
+        createId(),
 
-    const empty =
-      typeof storage
-        ?.createEmptyGlossaryItem ===
-      "function"
-        ? storage.createEmptyGlossaryItem()
-        : {
-            id:
-              createId(),
+      term: "",
 
-            term: "",
+      reading:
+        "",
 
-            reading:
-              "",
+      category:
+        "",
 
-            category:
-              "",
+      series:
+        "",
 
-            series:
-              "",
+      tags: [],
 
-            tags: [],
+      summary:
+        "",
 
-            summary:
-              "",
+      definition:
+        "",
 
-            definition:
-              "",
+      origin:
+        "",
 
-            origin:
-              "",
+      usage:
+        "",
 
-            usage:
-              "",
+      relatedTerms:
+        "",
 
-            relatedTerms:
-              "",
+      relatedCharacters:
+        "",
 
-            relatedCharacters:
-              "",
+      relatedOrganizations:
+        "",
 
-            relatedOrganizations:
-              "",
+      relatedWorlds:
+        "",
 
-            relatedWorlds:
-              "",
+      promptJa:
+        "",
 
-            promptJa:
-              "",
+      promptEn:
+        "",
 
-            promptEn:
-              "",
+      negativePrompt:
+        "",
 
-            negativePrompt:
-              "",
+      notes:
+        "",
 
-            notes:
-              "",
-
-            themeColor:
-              DEFAULT_COLOR,
-          };
+      themeColor:
+        DEFAULT_COLOR,
+    };
 
     state.mode =
       "create";

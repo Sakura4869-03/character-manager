@@ -842,172 +842,66 @@
      Storage Adapter
   ======================================================= */
 
-  function getStorageApi() {
-    return (
-      window.CharacterStorage ||
-      window.CreativeStorage ||
-      window.StorageManager ||
-      null
+/* =======================================================
+   Storage Adapter
+======================================================= */
+
+function getStorageApi() {
+  const storage =
+    window.CreativeStorage;
+
+  if (!storage) {
+    throw new Error(
+      "CreativeStorageが読み込まれていません。"
     );
   }
 
-  function getAllOrganizations() {
-    const api =
-      getStorageApi();
+  return storage;
+}
 
-    if (
-      api &&
-      typeof api.getOrganizations ===
-        "function"
-    ) {
-      const organizations =
-        api.getOrganizations();
+function getAllOrganizations() {
+  const organizations =
+    getStorageApi()
+      .getOrganizations();
 
-      return Array.isArray(
-        organizations
-      )
-        ? organizations
-        : [];
-    }
+  return Array.isArray(
+    organizations
+  )
+    ? organizations
+    : [];
+}
 
-    try {
-      const parsed =
-        JSON.parse(
-          localStorage.getItem(
-            "characterArchiveOrganizations"
-          ) || "[]"
-        );
-
-      return Array.isArray(parsed)
-        ? parsed
-        : [];
-    } catch (error) {
-      console.error(error);
-
-      return [];
-    }
+function findOrganizationById(
+  id
+) {
+  if (!id) {
+    return null;
   }
 
-  function findOrganizationById(
-    id
-  ) {
-    const api =
-      getStorageApi();
+  return (
+    getStorageApi()
+      .getOrganizationById(id) ||
+    null
+  );
+}
 
-    if (
-      api &&
-      typeof api.getOrganizationById ===
-        "function"
-    ) {
-      return (
-        api.getOrganizationById(
-          id
-        ) || null
-      );
-    }
+function persistOrganization(
+  data
+) {
+  return getStorageApi()
+    .saveOrganization(data);
+}
 
-    return (
-      getAllOrganizations().find(
-        (organization) =>
-          String(
-            organization.id
-          ) === String(id)
-      ) || null
-    );
+function removeOrganization(
+  id
+) {
+  if (!id) {
+    return false;
   }
 
-  function persistOrganization(
-    data
-  ) {
-    const api =
-      getStorageApi();
-
-    if (
-      api &&
-      typeof api.saveOrganization ===
-        "function"
-    ) {
-      const saved =
-        api.saveOrganization(
-          data
-        );
-
-      return saved || data;
-    }
-
-    const organizations =
-      getAllOrganizations();
-
-    const index =
-      organizations.findIndex(
-        (organization) =>
-          String(
-            organization.id
-          ) ===
-          String(data.id)
-      );
-
-    if (index >= 0) {
-      organizations[index] =
-        data;
-    } else {
-      organizations.unshift(
-        data
-      );
-    }
-
-    localStorage.setItem(
-      "characterArchiveOrganizations",
-      JSON.stringify(
-        organizations
-      )
-    );
-
-    return data;
-  }
-
-  function removeOrganization(
-    id
-  ) {
-    const api =
-      getStorageApi();
-
-    if (
-      api &&
-      typeof api.deleteOrganization ===
-        "function"
-    ) {
-      const result =
-        api.deleteOrganization(
-          id
-        );
-
-      return result !== false;
-    }
-
-    const organizations =
-      getAllOrganizations();
-
-    const filtered =
-      organizations.filter(
-        (organization) =>
-          String(
-            organization.id
-          ) !== String(id)
-      );
-
-    localStorage.setItem(
-      "characterArchiveOrganizations",
-      JSON.stringify(
-        filtered
-      )
-    );
-
-    return (
-      filtered.length !==
-      organizations.length
-    );
-  }
+  return getStorageApi()
+    .deleteOrganization(id);
+}
     /* =======================================================
      Validation
   ======================================================= */

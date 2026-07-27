@@ -7,8 +7,6 @@
 ========================================================= */
 
 window.WorldList = (() => {
-  const STORAGE_KEY =
-    "characterArchiveWorlds";
 
   const DEFAULT_COLOR =
     "#5B67B7";
@@ -223,13 +221,7 @@ window.WorldList = (() => {
 
   function handleStorageChange(
     event
-  ) {
-    if (
-      event.key !==
-      STORAGE_KEY
-    ) {
-      return;
-    }
+  ){
 
     loadWorlds();
     updateCount();
@@ -247,28 +239,37 @@ window.WorldList = (() => {
      Storage
   ======================================================= */
 
-  function loadWorlds() {
-    try {
-      const parsed =
-        JSON.parse(
-          localStorage.getItem(
-            STORAGE_KEY
-          ) || "[]"
-        );
+function getStorageApi() {
+  const storage =
+    window.CreativeStorage;
 
-      state.worlds =
-        Array.isArray(parsed)
-          ? parsed
-          : [];
-    } catch (error) {
-      console.error(
-        "世界観データを読み込めませんでした。",
-        error
-      );
-
-      state.worlds = [];
-    }
+  if (!storage) {
+    throw new Error(
+      "CreativeStorageが読み込まれていません。"
+    );
   }
+
+  return storage;
+}
+
+function loadWorlds() {
+  try {
+    const worlds =
+      getStorageApi().getWorlds();
+
+    state.worlds =
+      Array.isArray(worlds)
+        ? worlds
+        : [];
+  } catch (error) {
+    console.error(
+      "世界観データを読み込めませんでした。",
+      error
+    );
+
+    state.worlds = [];
+  }
+}
 
   /* =======================================================
      Public Render

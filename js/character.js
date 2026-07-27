@@ -707,291 +707,75 @@
     }
   }
 
-  /* =======================================================
-     Storage Adapter
-  ======================================================= */
+/* =======================================================
+   Storage Adapter
+======================================================= */
 
-  function getStorageApi() {
-    return (
-      window.CharacterStorage ||
-      window.characterStorage ||
-      window.StorageManager ||
-      null
+function getStorageApi() {
+  const storage =
+    window.CreativeStorage;
+
+  if (!storage) {
+    throw new Error(
+      "CreativeStorageが読み込まれていません。"
     );
   }
 
-  function getAllCharacters() {
-    const api =
-      getStorageApi();
+  return storage;
+}
 
-    if (
-      api &&
-      typeof api.getCharacters ===
-        "function"
-    ) {
-      const characters =
-        api.getCharacters();
+function getAllCharacters() {
+  const characters =
+    getStorageApi()
+      .getCharacters();
 
-      return Array.isArray(
-        characters
-      )
-        ? characters
-        : [];
-    }
+  return Array.isArray(
+    characters
+  )
+    ? characters
+    : [];
+}
 
-    if (
-      api &&
-      typeof api.getAllCharacters ===
-        "function"
-    ) {
-      const characters =
-        api.getAllCharacters();
-
-      return Array.isArray(
-        characters
-      )
-        ? characters
-        : [];
-    }
-
-    if (
-      api &&
-      typeof api.loadCharacters ===
-        "function"
-    ) {
-      const characters =
-        api.loadCharacters();
-
-      return Array.isArray(
-        characters
-      )
-        ? characters
-        : [];
-    }
-
-    const fallbackKeys = [
-      "characterArchiveCharacters",
-      "characters",
-      "character-manager-characters",
-    ];
-
-    for (
-      const key of fallbackKeys
-    ) {
-      try {
-        const parsed =
-          JSON.parse(
-            localStorage.getItem(
-              key
-            ) || "[]"
-          );
-
-        if (
-          Array.isArray(parsed)
-        ) {
-          return parsed;
-        }
-      } catch (error) {
-        console.warn(
-          `${key}の読み込みに失敗しました。`,
-          error
-        );
-      }
-    }
-
-    return [];
+function findCharacter(
+  characterId
+) {
+  if (!characterId) {
+    return null;
   }
 
-  function findCharacter(
-    characterId
-  ) {
-    const api =
-      getStorageApi();
-
-    if (
-      api &&
-      typeof api.getCharacterById ===
-        "function"
-    ) {
-      return (
-        api.getCharacterById(
-          characterId
-        ) || null
-      );
-    }
-
-    if (
-      api &&
-      typeof api.findCharacterById ===
-        "function"
-    ) {
-      return (
-        api.findCharacterById(
-          characterId
-        ) || null
-      );
-    }
-
-    return (
-      getAllCharacters().find(
-        (item) =>
-          String(item?.id) ===
-          String(characterId)
+  return (
+    getStorageApi()
+      .getCharacterById(
+        characterId
       ) || null
-    );
-  }
-    /* =======================================================
-     Save / Delete Storage
-  ======================================================= */
+  );
+}
 
-  function fallbackSave(
-    characterData
-  ) {
-    const storageKey =
-      "characterArchiveCharacters";
+/* =======================================================
+   Save / Delete Storage
+======================================================= */
 
-    const characters =
-      getAllCharacters();
-
-    const characterIndex =
-      characters.findIndex(
-        (character) =>
-          String(character?.id) ===
-          String(characterData.id)
-      );
-
-    if (
-      characterIndex >= 0
-    ) {
-      characters[
-        characterIndex
-      ] = characterData;
-    } else {
-      characters.unshift(
-        characterData
-      );
-    }
-
-    localStorage.setItem(
-      storageKey,
-      JSON.stringify(characters)
-    );
-
-    return characterData;
-  }
-
-  function saveCharacter(
-    characterData
-  ) {
-    const api =
-      getStorageApi();
-
-    if (
-      api &&
-      typeof api.saveCharacter ===
-        "function"
-    ) {
-      return api.saveCharacter(
-        characterData
-      );
-    }
-
-    if (
-      api &&
-      typeof api.upsertCharacter ===
-        "function"
-    ) {
-      return api.upsertCharacter(
-        characterData
-      );
-    }
-
-    if (
-      api &&
-      typeof api.updateCharacter ===
-        "function" &&
-      state.mode === "edit"
-    ) {
-      return api.updateCharacter(
-        characterData.id,
-        characterData
-      );
-    }
-
-    if (
-      api &&
-      typeof api.addCharacter ===
-        "function"
-    ) {
-      return api.addCharacter(
-        characterData
-      );
-    }
-
-    return fallbackSave(
+function saveCharacter(
+  characterData
+) {
+  return getStorageApi()
+    .saveCharacter(
       characterData
     );
+}
+
+function deleteCharacter(
+  characterId
+) {
+  if (!characterId) {
+    return false;
   }
 
-  function deleteCharacter(
-    characterId
-  ) {
-    const api =
-      getStorageApi();
-
-    if (
-      api &&
-      typeof api.deleteCharacter ===
-        "function"
-    ) {
-      return api.deleteCharacter(
-        characterId
-      );
-    }
-
-    if (
-      api &&
-      typeof api.removeCharacter ===
-        "function"
-    ) {
-      return api.removeCharacter(
-        characterId
-      );
-    }
-
-    if (
-      api &&
-      typeof api.deleteCharacterById ===
-        "function"
-    ) {
-      return api.deleteCharacterById(
-        characterId
-      );
-    }
-
-    const storageKey =
-      "characterArchiveCharacters";
-
-    const characters =
-      getAllCharacters()
-        .filter(
-          (character) =>
-            String(
-              character?.id
-            ) !==
-            String(
-              characterId
-            )
-        );
-
-    localStorage.setItem(
-      storageKey,
-      JSON.stringify(characters)
+  return getStorageApi()
+    .deleteCharacter(
+      characterId
     );
-
-    return true;
-  }
-
+}
   /* =======================================================
      Preview
   ======================================================= */
