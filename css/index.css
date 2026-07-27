@@ -798,11 +798,37 @@ button.stat-card:hover {
   .content-tabs {
     display: flex;
     width: 100%;
+    gap: 8px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 6px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .content-tabs::-webkit-scrollbar {
+    display: none;
   }
 
   .content-tab {
-    flex: 1;
+    flex: 0 0 auto;
+    min-width: max-content;
+    min-height: 46px;
     justify-content: center;
+    gap: 7px;
+    padding: 8px 14px;
+    white-space: nowrap;
+    word-break: keep-all;
+    overflow-wrap: normal;
+  }
+
+  .content-tab span {
+    display: inline-flex;
+    min-width: 24px;
+    height: 24px;
+    align-items: center;
+    justify-content: center;
+    padding: 0 7px;
   }
 
   .toolbar {
